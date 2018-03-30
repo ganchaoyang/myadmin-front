@@ -46,7 +46,8 @@ export default {
     exportZip: 'Export Zip',
     theme: '换肤',
     clipboardDemo: 'Clipboard',
-    i18n: '国际化'
+    i18n: '国际化',
+    userManagement: '用户管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -106,6 +107,7 @@ export default {
     delete: '删除',
     cancel: '取 消',
     confirm: '确 定',
+    nickname: '昵称',
     username: '用户名',
     email: '邮箱',
     mobile: '手机号',

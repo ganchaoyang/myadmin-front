@@ -46,7 +46,8 @@ export default {
     exportZip: 'Export Zip',
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
-    i18n: 'I18n'
+    i18n: 'I18n',
+    userManagement: 'UserManagement'
   },
   navbar: {
     logOut: 'Log Out',
@@ -106,6 +107,7 @@ export default {
     delete: 'Delete',
     cancel: 'Cancel',
     confirm: 'Confirm',
+    nickname: 'NickName',
     username: 'UserName',
     email: 'Email',
     mobile: 'Mobile',

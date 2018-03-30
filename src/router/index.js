@@ -71,9 +71,9 @@ export const asyncRouterMap = [
     children: [{
       path: 'index',
       component: _import('user/index'),
-      name: '用户管理',
+      name: 'userManagement',
       meta: {
-        title: '用户管理',
+        title: 'userManagement',
         icon: 'lock',
         roles: ['admin']
       }
