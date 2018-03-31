@@ -122,7 +122,8 @@ export default {
     permIdentify: 'PermIdentify',
     unitName: 'Name',
     address: 'Address',
-    telePhone: 'TelePhone'
+    telePhone: 'TelePhone',
+    addChildUnit: 'AddChildUnit'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

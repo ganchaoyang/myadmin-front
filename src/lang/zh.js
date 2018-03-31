@@ -122,7 +122,8 @@ export default {
     permIdentify: '权限标识',
     unitName: '单位名称',
     address: '地址',
-    telePhone: '电话'
+    telePhone: '电话',
+    addChildUnit: '添加下级单位'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
