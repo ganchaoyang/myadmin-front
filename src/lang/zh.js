@@ -47,7 +47,8 @@ export default {
     theme: '换肤',
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
-    userManagement: '用户管理'
+    userManagement: '用户管理',
+    roleManagement: '角色管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -112,8 +113,12 @@ export default {
     email: '邮箱',
     mobile: '手机号',
     disabled: '禁用',
+    enable: '启用',
     createTime: '创建时间',
-    opBy: '操作人'
+    opBy: '操作人',
+    action: '操作',
+    roleName: '角色名称',
+    permIdentify: '权限标识'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

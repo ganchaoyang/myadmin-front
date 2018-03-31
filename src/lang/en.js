@@ -47,7 +47,8 @@ export default {
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
-    userManagement: 'UserManagement'
+    userManagement: 'UserManagement',
+    roleManagement: 'RoleManagement'
   },
   navbar: {
     logOut: 'Log Out',
@@ -112,8 +113,12 @@ export default {
     email: 'Email',
     mobile: 'Mobile',
     disabled: 'Disabled',
+    enable: 'Enable',
     createTime: 'CreateTime',
-    opBy: 'OpUser'
+    opBy: 'OpUser',
+    action: 'Action',
+    roleName: 'RoleName',
+    permIdentify: 'PermIdentify'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
