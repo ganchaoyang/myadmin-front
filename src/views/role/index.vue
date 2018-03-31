@@ -20,9 +20,9 @@
         <el-table-column align="center" :label="$t('table.action')" min-width="200px">
             <template slot-scope="scope">
                 <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
-                <el-button v-if="!scope.row.status" size="mini" type="danger">{{$t('table.disabled')}}
+                <el-button v-if="!scope.row.disabled" size="mini" type="danger">{{$t('table.disabled')}}
                 </el-button>
-                <el-button v-if="scope.row.status" size="mini" type="success">{{$t('table.enable')}}
+                <el-button v-if="scope.row.disabled" size="mini" type="success">{{$t('table.enable')}}
                 </el-button>
                 <el-button size="mini" type="danger">{{$t('table.delete')}}
                 </el-button>
