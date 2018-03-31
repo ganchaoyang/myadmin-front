@@ -48,7 +48,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     userManagement: '用户管理',
-    roleManagement: '角色管理'
+    roleManagement: '角色管理',
+    unitManagement: '单位管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -118,7 +119,10 @@ export default {
     opBy: '操作人',
     action: '操作',
     roleName: '角色名称',
-    permIdentify: '权限标识'
+    permIdentify: '权限标识',
+    unitName: '单位名称',
+    address: '地址',
+    telePhone: '电话'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

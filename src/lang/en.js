@@ -48,7 +48,8 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
     userManagement: 'UserManagement',
-    roleManagement: 'RoleManagement'
+    roleManagement: 'RoleManagement',
+    unitManagement: 'UnitManagement'
   },
   navbar: {
     logOut: 'Log Out',
@@ -118,7 +119,10 @@ export default {
     opBy: 'OpUser',
     action: 'Action',
     roleName: 'RoleName',
-    permIdentify: 'PermIdentify'
+    permIdentify: 'PermIdentify',
+    unitName: 'Name',
+    address: 'Address',
+    telePhone: 'TelePhone'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

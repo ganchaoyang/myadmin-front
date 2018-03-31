@@ -96,6 +96,22 @@ export const asyncRouterMap = [
     }]
   },
   {
+    path: '/unit',
+    component: Layout,
+    redirct: '/unit/index',
+    meta: { roles: ['admin'] },
+    children: [{
+      path: 'index',
+      component: _import('unit/index'),
+      name: 'unitManagement',
+      meta: {
+        title: 'unitManagement',
+        icon: 'role',
+        roles: ['admin']
+      }
+    }]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/index',
