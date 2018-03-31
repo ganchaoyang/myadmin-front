@@ -17,9 +17,9 @@
     </el-table-column>
     <el-table-column :label="$t('table.action')">
         <template slot-scope="scope">
-            <el-button type="success">{{$t('table.addChildUnit')}}</el-button>
-            <el-button type="success">{{$t('table.edit')}}</el-button>
-            <el-button type="danger">{{$t('table.delete')}}</el-button>
+            <el-button size="mini" type="success">{{$t('table.addChildUnit')}}</el-button>
+            <el-button size="mini" type="success">{{$t('table.edit')}}</el-button>
+            <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
         </template>
     </el-table-column>
   </tree-table>
