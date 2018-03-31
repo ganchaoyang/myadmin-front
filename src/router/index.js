@@ -74,7 +74,7 @@ export const asyncRouterMap = [
       name: 'userManagement',
       meta: {
         title: 'userManagement',
-        icon: 'lock',
+        icon: 'people',
         roles: ['admin']
       }
     }]
@@ -90,7 +90,7 @@ export const asyncRouterMap = [
       name: 'roleManagement',
       meta: {
         title: 'roleManagement',
-        icon: 'lock',
+        icon: 'role',
         roles: ['admin']
       }
     }]
