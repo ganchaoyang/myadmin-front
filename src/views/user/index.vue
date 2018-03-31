@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column min-width="200px" align="center" :label="$t('table.disabled')">
         <template slot-scope="scope">
-          <span>{{scope.row.isDisabled}}</span>
+          <el-tag :type="scope.row.isDisabled | statusStyleFilter">{{$t(statusName(scope.row.isDisabled))}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column min-width="200px" align="center" :label="$t('table.createTime')">
@@ -36,6 +36,17 @@
       <el-table-column min-width="200px" align="center" :label="$t('table.opBy')">
         <template slot-scope="scope">
           <span>{{scope.row.opBy}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column min-width="200px" align="center" :label="$t('table.action')">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
+          <el-button v-if="!scope.row.isDisabled" size="mini" type="danger">{{$t('table.disabled')}}
+          </el-button>
+          <el-button v-if="scope.row.isDisabled" size="mini" type="success">{{$t('table.enable')}}
+          </el-button>
+          <el-button size="mini" type="danger">{{$t('table.delete')}}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,6 +64,12 @@ export default {
       list: null
     }
   },
+  filters: {
+    statusStyleFilter(status) {
+      const statusStyleList = ['danger', 'success']
+      return statusStyleList[status ? 0 : 1]
+    }
+  },
   created() {
     this.getList()
   },
@@ -63,6 +80,10 @@ export default {
         this.list = Response.data.data
         this.listLoading = false
       })
+    },
+    statusName(status) {
+      const statusNameList = ['table.disabled', 'table.enable']
+      return statusNameList[status ? 0 : 1]
     }
   }
 }
