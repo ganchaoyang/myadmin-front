@@ -28,7 +28,7 @@
 <script>
 
 import treeTable from '@/components/TreeTable'
-import treeToArray from './customEval'
+import treeToArray from '@/utils/customEval'
 import { findAll } from '@/api/unit'
 
 export default {
