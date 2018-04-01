@@ -3,6 +3,7 @@
     <div class="filter-container">
         <el-input style="width: 300px;" class="filter-item" :placeholder="$t('table.username')" v-model="queryLoginName"></el-input>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addUser.dialogVisible = true">{{$t('table.add')}}</el-button>
       </div>
       
       <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -55,11 +56,66 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog :visible.sync="addUser.dialogVisible" width="40%" title="创建用户">
+      <el-steps :active="addUser.createDialogStepActive" align-center>
+        <el-step title="步骤1" description="选择单位"></el-step>
+        <el-step title="步骤2" description="填写用户信息"></el-step>
+        <el-step title="步骤3" description="分配角色"></el-step>
+      </el-steps>
+      <el-tree :data="addUser.unitList" :props="addUser.defaultTreeProps" accordion 
+        @node-click="handleTreeNodeClick" style="margin: 15px 0 0 12%;" 
+        v-show="addUser.unitTreeVisible">
+      </el-tree>
+      <el-form label-width="80px" label-position="left" v-show="addUser.createFormVisible" :model="addUser.submitData" style="width: 60%;margin: 15px auto 0;">
+        <el-form-item label="登录名:">
+          <el-input v-model="addUser.submitData.loginName"></el-input>
+        </el-form-item>
+        <el-form-item label="昵  称:">
+          <el-input v-model="addUser.submitData.nickname"></el-input>
+        </el-form-item>
+        <el-form-item label="密  码:">
+          <el-input v-model="addUser.submitData.password" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮  箱:">
+          <el-input v-model="addUser.submitData.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电  话:">
+          <el-input v-model="addUser.submitData.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="禁 用">
+          <el-switch v-model="addUser.submitData.isDisabled"></el-switch>
+        </el-form-item>
+      </el-form>
+      <el-table ref="mutipleTable" :data="addUser.roleList" tooltip-effect="dark" style="width: 74%;margin: 15px auto 0"
+        v-show="addUser.createRolesTableVisible" @selection-change="handleRolesSelectionChange">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column :label="$t('table.roleName')">
+          <template slot-scope="scope">{{scope.row.name}}</template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.permIdentify')" min-width="200px">
+          <template slot-scope="scope">
+            <span>{{scope.row.note}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" :label="$t('table.status')" min-width="200px">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.disabled | statusStyleFilter">{{$t(statusName(scope.row.disabled))}}</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addUser.dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="createDialogNextStep">{{addUser.next}}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findAll } from '@/api/user'
+import { findAll, addUser } from '@/api/user'
+import { findAll as findAllUnits } from '@/api/unit'
+import { findAll as findAllRoles } from '@/api/role'
 
 export default {
   data() {
@@ -68,7 +124,31 @@ export default {
       listLoading: true,
       list: null,
       data: null,
-      queryLoginName: ''
+      queryLoginName: '',
+      addUser: {
+        dialogVisible: false,
+        createFormVisible: false,
+        unitTreeVisible: true,
+        createRolesTableVisible: false,
+        unitList: [],
+        roleList: [],
+        defaultTreeProps: {
+          label: 'name',
+          children: 'children'
+        },
+        createDialogStepActive: 0,
+        next: '下一步',
+        submitData: {
+          unitId: '',
+          loginName: '',
+          nickname: '',
+          password: '',
+          email: '',
+          mobile: '',
+          isDisabled: false,
+          roles: []
+        }
+      }
     }
   },
   filters: {
@@ -79,6 +159,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getUnitList()
   },
   methods: {
     getList() {
@@ -101,6 +182,39 @@ export default {
         }
       })
       this.list = temp
+    },
+    getUnitList() {
+      findAllUnits(true).then(Response => {
+        this.addUser.unitList = Response.data.data
+      })
+    },
+    getRoleList() {
+      findAllRoles().then(Response => {
+        this.addUser.roleList = Response.data.data
+      })
+    },
+    handleTreeNodeClick(data) {
+      this.addUser.submitData.unitId = data.id
+    },
+    handleRolesSelectionChange(val) {
+      this.addUser.submitData.roles = val
+    },
+    createDialogNextStep() {
+      this.addUser.createDialogStepActive += 1
+      var step = this.addUser.createDialogStepActive
+      if (step === 1) { // 填写用户基本信息。
+        this.addUser.unitTreeVisible = false
+        this.addUser.createFormVisible = true
+      } else if (step === 2) { // 分配角色。
+        this.getRoleList()
+        this.addUser.next = '提 交'
+        this.addUser.createFormVisible = false
+        this.addUser.createRolesTableVisible = true
+        // todo 需要将表单数据放到submit中。
+      } else if (step === 3) { // 代表提交数据
+        // console.log('submit data:' + JSON.stringify(this.addUser.submitData).replace(/\"/g, "\\'"))
+        addUser(this.addUser.submitData)
+      }
     }
   }
 }

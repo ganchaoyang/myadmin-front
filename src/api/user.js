@@ -6,3 +6,12 @@ export function findAll() {
     method: 'get'
   })
 }
+
+export function addUser(sysUser) {
+  const data = sysUser
+  return request({
+    url: '/user/add',
+    method: 'post',
+    data
+  })
+}
