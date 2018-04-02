@@ -44,7 +44,7 @@
           <span>{{scope.row.opBy}}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="200px" align="center" :label="$t('table.action')">
+      <el-table-column min-width="240px" align="center" :label="$t('table.action')">
         <template slot-scope="scope">
           <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
           <el-button v-if="!scope.row.isDisabled" size="mini" type="danger">{{$t('table.disabled')}}
