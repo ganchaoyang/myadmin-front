@@ -67,23 +67,24 @@
         @node-click="handleTreeNodeClick" style="margin: 15px 0 0 12%;" 
         v-show="addUser.unitTreeVisible">
       </el-tree>
-      <el-form label-width="80px" label-position="left" v-show="addUser.createFormVisible" :model="addUser.submitData" style="width: 60%;margin: 15px auto 0;">
-        <el-form-item label="登录名:">
-          <el-input v-model="addUser.submitData.loginName"></el-input>
+      <el-form label-width="80px" label-position="right" ref="userInfoForm" :rules="addUser.rules" v-show="addUser.createFormVisible" :model="addUser.submitData"
+        class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
+        <el-form-item label="登录名:" prop="loginName">
+          <el-input v-model="addUser.submitData.loginName" placeholder="请输入6-16位以内字符"></el-input>
         </el-form-item>
-        <el-form-item label="昵  称:">
-          <el-input v-model="addUser.submitData.nickname"></el-input>
+        <el-form-item label="昵  称:" prop="nickname">
+          <el-input v-model="addUser.submitData.nickname" placeholder="请输入6-16位以内字符"></el-input>
         </el-form-item>
-        <el-form-item label="密  码:">
-          <el-input v-model="addUser.submitData.password" type="password"></el-input>
+        <el-form-item label="密  码:" prop="password">
+          <el-input v-model="addUser.submitData.password" type="password" placeholder="密码必须为6-16位"></el-input>
         </el-form-item>
-        <el-form-item label="邮  箱:">
-          <el-input v-model="addUser.submitData.email"></el-input>
+        <el-form-item label="邮  箱:" prop="email">
+          <el-input v-model="addUser.submitData.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>
-        <el-form-item label="电  话:">
-          <el-input v-model="addUser.submitData.mobile"></el-input>
+        <el-form-item label="电  话:" prop="mobile">
+          <el-input v-model="addUser.submitData.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item label="禁 用">
+        <el-form-item label="禁  用" prop="disabled">
           <el-switch v-model="addUser.submitData.isDisabled"></el-switch>
         </el-form-item>
       </el-form>
@@ -105,7 +106,7 @@
         </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addUser.dialogVisible = false">取 消</el-button>
+        <el-button @click="createDialogCancel">取 消</el-button>
         <el-button type="primary" @click="createDialogNextStep">{{addUser.next}}</el-button>
       </span>
     </el-dialog>
@@ -116,6 +117,7 @@
 import { findAll, addUser } from '@/api/user'
 import { findAll as findAllUnits } from '@/api/unit'
 import { findAll as findAllRoles } from '@/api/role'
+import { Message } from 'element-ui'
 
 export default {
   data() {
@@ -147,6 +149,24 @@ export default {
           mobile: '',
           isDisabled: false,
           roles: []
+        },
+        rules: {
+          loginName: [
+            { type: 'string', required: true, message: '请输入登录名', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          nickname: [
+            { type: 'string', required: true, message: '请输入昵称', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          password: [
+            { type: 'string', required: true, message: '请输入密码', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          email: [
+            { type: 'email', required: true, message: '请输入邮箱', triiger: 'blur' },
+            { max: 32, message: '长度在32个字符以内', triiger: 'blur' }
+          ]
         }
       }
     }
@@ -200,6 +220,26 @@ export default {
       this.addUser.submitData.roles = val
     },
     createDialogNextStep() {
+      if (this.addUser.createDialogStepActive === 0 &&
+       this.addUser.submitData.unitId === '') {
+        Message.error('请选择单位。')
+        return
+      } else if (this.addUser.createDialogStepActive === 1) {
+        var valid
+        this.$refs['userInfoForm'].validate(function(v) {
+          if (!v) {
+            Message.error('请填写完整的用户信息。')
+          }
+          valid = v
+        })
+        console.log(valid)
+        if (!valid) return
+      } else if (this.addUser.createDialogStepActive === 2) {
+        if (this.addUser.submitData.roles.length === 0) {
+          Message.error('请选择用户角色，后续可修改。')
+          return
+        }
+      }
       this.addUser.createDialogStepActive += 1
       var step = this.addUser.createDialogStepActive
       if (step === 1) { // 填写用户基本信息。
@@ -210,11 +250,38 @@ export default {
         this.addUser.next = '提 交'
         this.addUser.createFormVisible = false
         this.addUser.createRolesTableVisible = true
-        // todo 需要将表单数据放到submit中。
+      // todo 需要将表单数据放到submit中。
       } else if (step === 3) { // 代表提交数据
         // console.log('submit data:' + JSON.stringify(this.addUser.submitData).replace(/\"/g, "\\'"))
-        addUser(this.addUser.submitData)
+        addUser(this.addUser.submitData).then(Response => {
+          const data = Response.data
+          this.createDialogCancel()
+          if (data.code === 0) {
+            Message.success('添加用户成功！')
+            this.getList()
+          } else {
+            Message.error(data.data)
+          }
+        })
       }
+    },
+    createDialogCancel() {
+      this.addUser.dialogVisible = false
+      this.addUser.createDialogStepActive = 0
+      this.addUser.unitTreeVisible = true
+      this.addUser.createFormVisible = false
+      this.addUser.createRolesTableVisible = false
+      this.recoverSubmitData()
+    },
+    recoverSubmitData() {
+      this.addUser.submitData.unitId = ''
+      this.addUser.submitData.loginName = ''
+      this.addUser.submitData.nickname = ''
+      this.addUser.submitData.password = ''
+      this.addUser.submitData.email = ''
+      this.addUser.submitData.mobile = ''
+      this.addUser.submitData.isDisabled = false
+      this.addUser.submitData.roles = []
     }
   }
 }

@@ -65,14 +65,17 @@ const user = {
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
+          /* if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             reject('error')
-          }
-          const data = response.data
-          commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          }*/
+          const data = response.data.data
+          const roles = data.roles.map(element => {
+            return element.name
+          })
+          commit('SET_ROLES', roles)
+          commit('SET_NAME', data.loginName)
+          commit('SET_AVATAR', '')
+          commit('SET_INTRODUCTION', '')
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -124,10 +127,13 @@ const user = {
         setToken(role)
         getUserInfo(role).then(response => {
           const data = response.data
-          commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          const roles = data.data.roles.map(element => {
+            return element.name
+          })
+          commit('SET_ROLES', roles)
+          commit('SET_NAME', data.data.loginName)
+          commit('SET_AVATAR', '')
+          commit('SET_INTRODUCTION', '')
           resolve()
         })
       })
