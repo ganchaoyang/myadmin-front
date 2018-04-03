@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column min-width="200px" align="center" :label="$t('table.opBy')">
         <template slot-scope="scope">
-          <span>{{scope.row.opBy}}</span>
+          <span>{{ (scope.row.opUser==null)?'':scope.row.opUser.loginName }}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="240px" align="center" :label="$t('table.action')">
