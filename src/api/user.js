@@ -24,3 +24,12 @@ export function deleteUser(id) {
     method: 'delete'
   })
 }
+
+// 更新用户。
+export function updateUser(data) {
+  return request({
+    url: '/user/edit',
+    method: 'put',
+    data
+  })
+}

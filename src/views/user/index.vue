@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column min-width="200px" align="center" :label="$t('table.disabled')">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isDisabled | statusStyleFilter">{{$t(statusName(scope.row.isDisabled))}}</el-tag>
+          <el-tag :type="scope.row.disabled | statusStyleFilter">{{$t(statusName(scope.row.disabled))}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column min-width="200px" align="center" :label="$t('table.createTime')">
@@ -46,10 +46,10 @@
       </el-table-column>
       <el-table-column min-width="240px" align="center" :label="$t('table.action')">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
-          <el-button v-if="!scope.row.isDisabled" size="mini" type="danger">{{$t('table.disabled')}}
+          <el-button type="primary" size="mini" @click="handleEditUser(scope.row)">{{$t('table.edit')}}</el-button>
+          <el-button v-if="!scope.row.disabled" size="mini" type="danger" @click="disableAndEnable(scope.row)">{{$t('table.disabled')}}
           </el-button>
-          <el-button v-if="scope.row.isDisabled" size="mini" type="success">{{$t('table.enable')}}
+          <el-button v-if="scope.row.disabled" size="mini" type="success" @click="disableAndEnable(scope.row)">{{$t('table.enable')}}
           </el-button>
           <el-button size="mini" type="danger" @click="deleteU(scope.row.id)">{{$t('table.delete')}}
           </el-button>
@@ -67,7 +67,7 @@
         @node-click="handleTreeNodeClick" style="margin: 15px 0 0 12%;" 
         v-show="addUser.unitTreeVisible">
       </el-tree>
-      <el-form label-width="80px" label-position="right" ref="userInfoForm" :rules="addUser.rules" v-show="addUser.createFormVisible" :model="addUser.submitData"
+      <el-form label-width="80px" label-position="right" ref="userInfoForm" :rules="form.addRules" v-show="addUser.createFormVisible" :model="addUser.submitData"
         class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
         <el-form-item label="登录名:" prop="loginName">
           <el-input v-model="addUser.submitData.loginName" placeholder="请输入6-16位以内字符"></el-input>
@@ -85,7 +85,7 @@
           <el-input v-model="addUser.submitData.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item label="禁  用" prop="disabled">
-          <el-switch v-model="addUser.submitData.isDisabled"></el-switch>
+          <el-switch v-model="addUser.submitData.disabled"></el-switch>
         </el-form-item>
       </el-form>
       <el-table ref="mutipleTable" :data="addUser.roleList" tooltip-effect="dark" style="width: 74%;margin: 15px auto 0"
@@ -110,11 +110,36 @@
         <el-button type="primary" @click="createDialogNextStep">{{addUser.next}}</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog :visible.sync="editUser.dialogVisible" width="40%" title="编辑用户">
+      <el-form label-width="80px" label-position="right" ref="userInfoForm" :rules="form.editRules" v-show="editUser.editFormVisible" :model="editUser.data"
+        class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
+        <el-form-item label="登录名:" prop="loginName">
+          <el-input v-model="editUser.data.loginName" placeholder="请输入6-16位以内字符"></el-input>
+        </el-form-item>
+        <el-form-item label="昵  称:" prop="nickname">
+          <el-input v-model="editUser.data.nickname" placeholder="请输入6-16位以内字符"></el-input>
+        </el-form-item>
+        <el-form-item label="密  码:" prop="password">
+          <el-input v-model="editUser.data.password" type="password" placeholder="密码必须为6-16位"></el-input>
+        </el-form-item>
+        <el-form-item label="邮  箱:" prop="email">
+          <el-input v-model="editUser.data.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="电  话:" prop="mobile">
+          <el-input v-model="editUser.data.mobile" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleCnacelEdit">取 消</el-button>
+        <el-button type="primary" @click="submitUpdate">提 交</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findAll, addUser, deleteUser } from '@/api/user'
+import { findAll, addUser, deleteUser, updateUser } from '@/api/user'
 import { findAll as findAllUnits } from '@/api/unit'
 import { findAll as findAllRoles } from '@/api/role'
 import { Message } from 'element-ui'
@@ -147,10 +172,25 @@ export default {
           password: '',
           email: '',
           mobile: '',
-          isDisabled: false,
+          disabled: false,
           roles: []
-        },
-        rules: {
+        }
+      },
+      editUser: {
+        dialogVisible: false,
+        editFormVisible: true,
+        data: {
+          id: '',
+          loginName: '',
+          nickname: '',
+          password: '',
+          email: '',
+          mobile: '',
+          disabled: false
+        }
+      },
+      form: {
+        addRules: {
           loginName: [
             { type: 'string', required: true, message: '请输入登录名', triiger: 'blur' },
             { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
@@ -161,6 +201,24 @@ export default {
           ],
           password: [
             { type: 'string', required: true, message: '请输入密码', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          email: [
+            { type: 'email', required: true, message: '请输入邮箱', triiger: 'blur' },
+            { max: 32, message: '长度在32个字符以内', triiger: 'blur' }
+          ]
+        },
+        editRules: {
+          loginName: [
+            { type: 'string', required: true, message: '请输入登录名', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          nickname: [
+            { type: 'string', required: true, message: '请输入昵称', triiger: 'blur' },
+            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          password: [
+            { type: 'string', required: false, message: '请输入密码', triiger: 'blur' },
             { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
           ],
           email: [
@@ -280,7 +338,7 @@ export default {
       this.addUser.submitData.password = ''
       this.addUser.submitData.email = ''
       this.addUser.submitData.mobile = ''
-      this.addUser.submitData.isDisabled = false
+      this.addUser.submitData.disabled = false
       this.addUser.submitData.roles = []
     },
     deleteU(id) {
@@ -292,6 +350,57 @@ export default {
           Message.error(Response.data.data)
         }
       })
+    },
+    handleEditUser(data) {
+      this.setEditUser(data)
+      this.editUser.dialogVisible = true
+    },
+    handleCnacelEdit() {
+      this.initEditUser()
+      this.editUser.dialogVisible = false
+    },
+    submitUpdate() {
+      updateUser(this.editUser.data).then(Response => {
+        if (Response.data.code === 0) {
+          Message.success(Response.data.data)
+          this.getList()
+          this.handleCnacelEdit()
+        } else {
+          Message.error(Response.data.data)
+        }
+      })
+    },
+    disableAndEnable(data) {
+      this.setEditUser(data)
+      this.editUser.data.disabled = !this.editUser.data.disabled
+      this.editUser.data.loginName = null
+      updateUser(this.editUser.data).then(Response => {
+        if (Response.data.code === 0) {
+          Message.success(Response.data.data)
+          this.getList()
+          this.initEditUser()
+        } else {
+          Message.error(Response.data.data)
+        }
+      })
+    },
+    setEditUser(data) {
+      this.editUser.data.id = data.id
+      this.editUser.data.loginName = data.loginName
+      this.editUser.data.nickname = data.nickname
+      this.editUser.data.email = data.email
+      this.editUser.data.mobile = data.mobile
+      this.editUser.data.disabled = data.disabled
+      console.log
+    },
+    initEditUser() {
+      this.editUser.data.id = ''
+      this.editUser.data.loginName = ''
+      this.editUser.data.nickname = ''
+      this.editUser.data.password = ''
+      this.editUser.data.email = ''
+      this.editUser.data.mobile = ''
+      this.editUser.data.disabled = false
     }
   }
 }
