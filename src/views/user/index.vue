@@ -51,7 +51,7 @@
           </el-button>
           <el-button v-if="scope.row.isDisabled" size="mini" type="success">{{$t('table.enable')}}
           </el-button>
-          <el-button size="mini" type="danger">{{$t('table.delete')}}
+          <el-button size="mini" type="danger" @click="deleteU(scope.row.id)">{{$t('table.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { findAll, addUser } from '@/api/user'
+import { findAll, addUser, deleteUser } from '@/api/user'
 import { findAll as findAllUnits } from '@/api/unit'
 import { findAll as findAllRoles } from '@/api/role'
 import { Message } from 'element-ui'
@@ -282,6 +282,16 @@ export default {
       this.addUser.submitData.mobile = ''
       this.addUser.submitData.isDisabled = false
       this.addUser.submitData.roles = []
+    },
+    deleteU(id) {
+      deleteUser(id).then(Response => {
+        if (Response.data.code === 0) {
+          Message.success('删除成功。')
+          this.getList()
+        } else {
+          Message.error(Response.data.data)
+        }
+      })
     }
   }
 }
