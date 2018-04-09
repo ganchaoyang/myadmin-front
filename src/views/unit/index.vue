@@ -3,7 +3,7 @@
     <div class="filter-container">
         <el-input style="width: 300px;" class="filter-item" :placeholder="$t('table.unitName')" v-model="queryUnitName"></el-input>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addUnit.dialogVisible = true">{{$t('table.add')}}</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = true">{{$t('table.add')}}</el-button>
       </div>
     <tree-table :data="list" :evalFunc="func" :expandAll="expandAll" border>
       <el-table-column :label="$t('table.unitName')">
@@ -24,21 +24,21 @@
       <el-table-column :label="$t('table.action')">
           <template slot-scope="scope">
               <el-button size="mini" type="success">{{$t('table.addChildUnit')}}</el-button>
-              <el-button size="mini" type="success">{{$t('table.edit')}}</el-button>
+              <el-button size="mini" type="success" @click="editUnitDilogHandle(scope.row)">{{$t('table.edit')}}</el-button>
               <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
           </template>
       </el-table-column>
     </tree-table>
-    <el-dialog :visible.sync="addUnit.dialogVisible" width="40%" title="新增单位">
-      <el-steps :active="addUnit.createDialogStepActive" align-center>
+    <el-dialog :visible.sync="dialog.dialogVisible" width="40%" :title="dialog.title">
+      <el-steps :active="dialog.addStepActive" align-center v-show="dialog.addStep">
         <el-step title="步骤1" description="选择父级单位"></el-step>
         <el-step title="步骤2" description="填写单位信息"></el-step>
       </el-steps>
-      <el-tree :data="list" :props="addUnit.defaultTreeProps" accordion 
+      <el-tree :data="list" :props="dialog.defaultTreeProps" accordion 
         @node-click="handleTreeNodeClick" style="margin: 15px 0 0 12%;" 
-        v-show="addUnit.unitTreeVisible">
+        v-show="dialog.addUnitTreeVisible">
       </el-tree>
-      <el-form label-width="90px" label-position="right" ref="unitForm" :rules="rules.addRules" v-show="addUnit.createFormVisible" :model="submitUnit"
+      <el-form label-width="90px" label-position="right" ref="unitForm" :rules="rules.addRules" v-show="dialog.addFormVisible" :model="submitUnit"
         class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
         <el-form-item label="父级单位:" prop="parentName">
           <el-input v-model="parentUnitName" placeholder="未选择父级单位" :disabled="true"></el-input>
@@ -61,7 +61,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancelDialog">取 消</el-button>
-        <el-button type="primary" @click="handleNextStep">{{addUnit.nextText}}</el-button>
+        <el-button type="primary" @click="handleNextStep">{{dialog.nextText}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -71,7 +71,7 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll, addUnit } from '@/api/unit'
+import { findAll, addUnit, editUnit } from '@/api/unit'
 import { Message } from 'element-ui'
 
 export default {
@@ -85,24 +85,29 @@ export default {
       list: [],
       queryUnitName: '',
       parentUnitName: '',
-      addUnit: {
+      dialog: {
+        type: 'add',
+        title: '新增单位',
+        addStep: true,
+        addFormVisible: false,
+        addUnitTreeVisible: true,
+        dialogVisible: false,
+        addStepActive: 0,
+        nextText: '下一步',
         defaultTreeProps: {
           label: 'name',
           children: 'children'
-        },
-        unitTreeVisible: true,
-        dialogVisible: false,
-        createDialogStepActive: 0,
-        createFormVisible: false,
-        nextText: '下一步'
+        }
       },
       submitUnit: {
-        parentId: '',
-        name: '',
-        address: '',
-        email: '',
-        website: '',
-        telePhone: ''
+        id: null,
+        parentId: null,
+        name: null,
+        address: null,
+        email: null,
+        website: null,
+        telePhone: null,
+        hasChildren: false
       },
       rules: {
         addRules: {
@@ -142,43 +147,80 @@ export default {
       this.parentUnitName = data.name
     },
     cancelDialog() {
-      this.addUnit.createDialogStepActive = 0
+      this.dialog.dialogVisible = false
+      this.dialog.addStepActive = 0
+      this.dialog.addUnitTreeVisible = true
+      this.dialog.addFormVisible = false
+      this.dialog.nextText = '下一步'
+      this.dialog.title = '新增单位'
+      this.dialog.addStep = true
+      this.dialog.type = 'add'
       this.initSubmitUnit()
-      this.addUnit.dialogVisible = false
-      this.addUnit.unitTreeVisible = true
-      this.addUnit.createFormVisible = false
-      this.addUnit.nextText = '下一步'
     },
     initSubmitUnit() {
-      this.submitUnit.parentId = ''
-      this.submitUnit.name = ''
-      this.submitUnit.address = ''
-      this.submitUnit.email = ''
-      this.submitUnit.website = ''
-      this.submitUnit.telePhone = ''
+      this.submitUnit.id = null
+      this.submitUnit.parentId = null
+      this.submitUnit.name = null
+      this.submitUnit.address = null
+      this.submitUnit.email = null
+      this.submitUnit.website = null
+      this.submitUnit.telePhone = null
+      this.submitUnit.hasChildren = false
     },
     handleNextStep() {
-      var step = this.addUnit.createDialogStepActive
-      step += 1
-      this.addUnit.createDialogStepActive = step
-      console.log(step)
-      if (step === 1) {
-        this.addUnit.unitTreeVisible = false
-        this.addUnit.createFormVisible = true
-        this.addUnit.nextText = '提 交'
-      }
-      if (step === 2) {
-        addUnit(this.submitUnit).then(Response => {
+      if (this.dialog.type === 'edit') {
+        editUnit(this.submitUnit).then(Response => {
           this.cancelDialog()
-          const data = Response.data
-          if (data.code === 0) {
-            Message.success(data.data)
+          const res = Response.data
+          if (res.code === 0) {
+            Message.success(res.data)
             this.unitsTree()
           } else {
-            Message.error(data.data)
+            Message.error(res.data)
           }
         })
+      } else {
+        this.dialog.addStepActive += 1
+        if (this.dialog.addStepActive === 1) {
+          this.dialog.addUnitTreeVisible = false
+          this.dialog.addFormVisible = true
+          this.dialog.nextText = '提 交'
+        }
+        if (this.dialog.addStepActive === 2) {
+          addUnit(this.submitUnit).then(Response => {
+            this.cancelDialog()
+            const data = Response.data
+            if (data.code === 0) {
+              Message.success(data.data)
+              this.unitsTree()
+            } else {
+              Message.error(data.data)
+            }
+          })
+        }
       }
+    },
+    editUnitDilogHandle(data) {
+      console.log(data)
+      this.dialog.title = '编辑单位'
+      this.dialog.nextText = '提  交'
+      this.dialog.dialogVisible = true
+      this.dialog.addStep = false
+      this.dialog.addUnitTreeVisible = false
+      this.dialog.addFormVisible = true
+      this.submitUnit.parentId = data.parentId
+      this.submitUnit.name = data.name
+      this.submitUnit.address = data.address
+      this.submitUnit.website = data.website
+      this.submitUnit.email = data.email
+      this.submitUnit.telePhone = data.telePhone
+      this.submitUnit.id = data.id
+      this.dialog.type = 'edit'
+      if (!(data.parentId === null)) {
+        this.parentUnitName = data.parent.name
+      }
+      this.submitUnit.hasChildren = data.hasChildren
+      console.log(this.submitUnit)
     }
   }
 }

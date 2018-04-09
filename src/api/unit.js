@@ -16,3 +16,13 @@ export function addUnit(unit) {
     data
   })
 }
+
+export function editUnit(unit) {
+  const data = unit
+  return request({
+    url: '/unit/edit',
+    method: 'put',
+    data
+  })
+}
+
