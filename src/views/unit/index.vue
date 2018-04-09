@@ -38,13 +38,16 @@
         @node-click="handleTreeNodeClick" style="margin: 15px 0 0 12%;" 
         v-show="addUnit.unitTreeVisible">
       </el-tree>
-      <el-form label-width="90px" label-position="right" ref="userInfoForm" :rules="form.addRules" v-show="addUnit.createFormVisible" :model="addUnit.submitUnit"
+      <el-form label-width="90px" label-position="right" ref="unitForm" :rules="rules.addRules" v-show="addUnit.createFormVisible" :model="submitUnit"
         class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
+        <el-form-item label="父级单位:" prop="parentName">
+          <el-input v-model="parentUnitName" placeholder="未选择父级单位" :disabled="true"></el-input>
+        </el-form-item>
         <el-form-item label="单位名称:" prop="name">
-          <el-input v-model="submitUnit.loginName" placeholder="请输入6-16位以内字符"></el-input>
+          <el-input v-model="submitUnit.name" placeholder="请输入2-16位以内字符"></el-input>
         </el-form-item>
         <el-form-item label="单位邮箱:" prop="email">
-          <el-input v-model="submitUnit.nickname" placeholder="请输入单位邮箱"></el-input>
+          <el-input v-model="submitUnit.email" placeholder="请输入单位邮箱"></el-input>
         </el-form-item>
         <el-form-item label="单位网址:" prop="website">
           <el-input v-model="submitUnit.website" placeholder="请输入单位网址"></el-input>
@@ -68,7 +71,8 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll } from '@/api/unit'
+import { findAll, addUnit } from '@/api/unit'
+import { Message } from 'element-ui'
 
 export default {
   name: 'UnitTreeTable',
@@ -80,6 +84,7 @@ export default {
       data: [],
       list: [],
       queryUnitName: '',
+      parentUnitName: '',
       addUnit: {
         defaultTreeProps: {
           label: 'name',
@@ -99,11 +104,11 @@ export default {
         website: '',
         telePhone: ''
       },
-      form: {
+      rules: {
         addRules: {
           name: [
             { type: 'string', required: true, message: '请输入单位名称', triiger: 'blur' },
-            { min: 6, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+            { min: 2, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
           ],
           email: [
             { type: 'email', required: false, message: '请输入邮箱', triiger: 'blur' },
@@ -121,11 +126,6 @@ export default {
       findAll(true).then(Response => {
         this.data = Response.data.data
         this.list = Response.data.data
-        this.list.forEach(element => {
-          if (element.name === '不指定') {
-            this.submitUnit.parentId = element.id
-          }
-        })
       })
     },
     handleSearch() {
@@ -139,10 +139,23 @@ export default {
     },
     handleTreeNodeClick(data) {
       this.submitUnit.parentId = data.id
+      this.parentUnitName = data.name
     },
     cancelDialog() {
-      this.submitUnit.parentId = ''
+      this.addUnit.createDialogStepActive = 0
+      this.initSubmitUnit()
       this.addUnit.dialogVisible = false
+      this.addUnit.unitTreeVisible = true
+      this.addUnit.createFormVisible = false
+      this.addUnit.nextText = '下一步'
+    },
+    initSubmitUnit() {
+      this.submitUnit.parentId = ''
+      this.submitUnit.name = ''
+      this.submitUnit.address = ''
+      this.submitUnit.email = ''
+      this.submitUnit.website = ''
+      this.submitUnit.telePhone = ''
     },
     handleNextStep() {
       var step = this.addUnit.createDialogStepActive
@@ -153,6 +166,18 @@ export default {
         this.addUnit.unitTreeVisible = false
         this.addUnit.createFormVisible = true
         this.addUnit.nextText = '提 交'
+      }
+      if (step === 2) {
+        addUnit(this.submitUnit).then(Response => {
+          this.cancelDialog()
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.unitsTree()
+          } else {
+            Message.error(data.data)
+          }
+        })
       }
     }
   }

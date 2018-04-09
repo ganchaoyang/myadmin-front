@@ -7,3 +7,12 @@ export function findAll(tree) {
     params: { tree }
   })
 }
+
+export function addUnit(unit) {
+  const data = unit
+  return request({
+    url: '/unit/add',
+    method: 'post',
+    data
+  })
+}
