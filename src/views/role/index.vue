@@ -1,5 +1,10 @@
 <template>
   <div class="app-container calendar-list-container">
+    <div class="filter-container">
+        <el-input style="width: 300px;" class="filter-item" :placeholder="$t('table.unitName')" v-model="queryRoleName"></el-input>
+        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchHandle">{{$t('table.search')}}</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = true">{{$t('table.add')}}</el-button>
+      </div>
       <el-table :key="tableKey" :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row 
       style="width: 100%">
         <el-table-column align="center" :label="$t('table.roleName')" min-width="200px">
@@ -40,7 +45,12 @@ export default {
     return {
       tableKey: 0,
       listLoading: true,
-      list: null
+      list: [],
+      data: [],
+      queryRoleName: '',
+      dialog: {
+        dialogVisible: false
+      }
     }
   },
   filters: {
@@ -57,12 +67,22 @@ export default {
       this.listLoading = true
       findAll().then(Response => {
         this.list = Response.data.data
+        this.data = this.list
         this.listLoading = false
       })
     },
     statusName(status) {
       const statusNameList = ['table.disabled', 'table.enable']
       return statusNameList[status ? 0 : 1]
+    },
+    searchHandle() {
+      const temp = []
+      this.data.forEach(element => {
+        if (element.name.match(this.queryRoleName)) {
+          temp.push(element)
+        }
+      })
+      this.list = temp
     }
   }
 }
