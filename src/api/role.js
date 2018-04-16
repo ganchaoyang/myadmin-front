@@ -6,3 +6,13 @@ export function findAll() {
     method: 'get'
   })
 }
+
+export function addRole(role) {
+  const data = role
+  return request({
+    url: '/role/add',
+    method: 'post',
+    data
+  })
+}
+

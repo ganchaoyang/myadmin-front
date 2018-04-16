@@ -34,11 +34,30 @@
             </template>
         </el-table-column>
       </el-table>
+      <el-dialog :visible.sync="dialog.dialogVisible" width="40%" :title="dialog.title">
+        <el-form label-width="90px" label-position="right" ref="roleForm" :rules="rules.addRules" v-show="dialog.formVisible" :model="submitRole"
+          class="demo-ruleForm" style="width: 60%;margin: 15px auto 0;">
+          <el-form-item label="角色名称:" prop="name">
+            <el-input v-model="submitRole.name" placeholder="请输入2-16位以内字符"></el-input>
+          </el-form-item>
+          <el-form-item label="角色标识:" prop="note">
+            <el-input v-model="submitRole.note" placeholder="请输入角色标识，eg:doctor"></el-input>
+          </el-form-item>
+          <el-form-item label="禁  用" prop="disabled">
+            <el-switch v-model="submitRole.disabled"></el-switch>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="cancleDialogHandle()">取 消</el-button>
+          <el-button type="primary" @click="nextStepDialogHandle()">{{dialog.nextText}}</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { findAll } from '@/api/role'
+import { findAll, addRole } from '@/api/role'
+import { Message } from 'element-ui'
 
 export default {
   data() {
@@ -49,7 +68,28 @@ export default {
       data: [],
       queryRoleName: '',
       dialog: {
-        dialogVisible: false
+        type: 'add',
+        title: '创建角色',
+        dialogVisible: false,
+        formVisible: true,
+        nextText: '提 交'
+      },
+      submitRole: {
+        name: '',
+        note: '',
+        disabled: false
+      },
+      rules: {
+        addRules: {
+          name: [
+            { type: 'string', required: true, message: '请输入角色名称', triiger: 'blur' },
+            { min: 2, max: 16, message: '长度在6-16个字符', triiger: 'blur' }
+          ],
+          note: [
+            { type: 'string', required: true, message: '请输入权限标识', triiger: 'blur' },
+            { max: 10, message: '长度在10个字符以内', triiger: 'blur' }
+          ]
+        }
       }
     }
   },
@@ -83,6 +123,29 @@ export default {
         }
       })
       this.list = temp
+    },
+    restoreSubmitData() {
+      this.submitRole.name = ''
+      this.submitRole.note = ''
+      this.submitRole.disabled = false
+    },
+    cancleDialogHandle() {
+      this.dialog.dialogVisible = false
+      this.restoreSubmitData()
+    },
+    nextStepDialogHandle() {
+      if (this.dialog.type === 'add') { // 添加角色。
+        addRole(this.submitRole).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.cancleDialogHandle()
+            this.getList()
+          } else {
+            Message.error(data.data)
+          }
+        })
+      }
     }
   }
 }
