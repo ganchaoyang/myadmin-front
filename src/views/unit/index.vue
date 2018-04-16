@@ -25,7 +25,7 @@
           <template slot-scope="scope">
               <el-button size="mini" type="success" @click="addChildUnitHandle(scope.row)">{{$t('table.addChildUnit')}}</el-button>
               <el-button size="mini" type="success" @click="editUnitDilogHandle(scope.row)">{{$t('table.edit')}}</el-button>
-              <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
+              <el-button size="mini" type="danger" @click="deleteUnitHandle(scope.row.id)">{{$t('table.delete')}}</el-button>
           </template>
       </el-table-column>
     </tree-table>
@@ -71,7 +71,7 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll, addUnit, editUnit } from '@/api/unit'
+import { findAll, addUnit, editUnit, deleteUnit } from '@/api/unit'
 import { Message } from 'element-ui'
 
 export default {
@@ -231,6 +231,17 @@ export default {
       this.dialog.type = 'addChild'
       this.submitUnit.parentId = data.id
       this.parentUnitName = data.name
+    },
+    deleteUnitHandle(id) {
+      deleteUnit(id).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          Message.success(data.data)
+          this.unitsTree()
+        } else {
+          Message.error(data.data)
+        }
+      })
     }
   }
 }

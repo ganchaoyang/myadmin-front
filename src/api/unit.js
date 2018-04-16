@@ -26,3 +26,10 @@ export function editUnit(unit) {
   })
 }
 
+export function deleteUnit(id) {
+  return request({
+    url: '/unit/delete/' + id,
+    method: 'delete'
+  })
+}
+
