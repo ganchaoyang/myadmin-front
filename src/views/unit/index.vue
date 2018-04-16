@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column :label="$t('table.action')">
           <template slot-scope="scope">
-              <el-button size="mini" type="success">{{$t('table.addChildUnit')}}</el-button>
+              <el-button size="mini" type="success" @click="addChildUnitHandle(scope.row)">{{$t('table.addChildUnit')}}</el-button>
               <el-button size="mini" type="success" @click="editUnitDilogHandle(scope.row)">{{$t('table.edit')}}</el-button>
               <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
           </template>
@@ -167,7 +167,7 @@ export default {
       this.submitUnit.telePhone = null
       this.submitUnit.hasChildren = false
     },
-    handleNextStep() {
+    handleNextStep() { // 对话框点击下一步或者确定按钮。
       if (this.dialog.type === 'edit') {
         editUnit(this.submitUnit).then(Response => {
           this.cancelDialog()
@@ -186,7 +186,8 @@ export default {
           this.dialog.addFormVisible = true
           this.dialog.nextText = '提 交'
         }
-        if (this.dialog.addStepActive === 2) {
+        if (this.dialog.addStepActive === 2 ||
+         this.dialog.type === 'addChild') {
           addUnit(this.submitUnit).then(Response => {
             this.cancelDialog()
             const data = Response.data
@@ -201,7 +202,6 @@ export default {
       }
     },
     editUnitDilogHandle(data) {
-      console.log(data)
       this.dialog.title = '编辑单位'
       this.dialog.nextText = '提  交'
       this.dialog.dialogVisible = true
@@ -221,6 +221,16 @@ export default {
       }
       this.submitUnit.hasChildren = data.hasChildren
       console.log(this.submitUnit)
+    },
+    addChildUnitHandle(data) {
+      this.dialog.nextText = '提 交'
+      this.dialog.dialogVisible = true
+      this.dialog.addStep = false
+      this.dialog.addUnitTreeVisible = false
+      this.dialog.addFormVisible = true
+      this.dialog.type = 'addChild'
+      this.submitUnit.parentId = data.id
+      this.parentUnitName = data.name
     }
   }
 }
