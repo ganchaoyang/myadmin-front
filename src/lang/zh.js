@@ -49,7 +49,8 @@ export default {
     i18n: '国际化',
     userManagement: '用户管理',
     roleManagement: '角色管理',
-    unitManagement: '单位管理'
+    unitManagement: '单位管理',
+    permManagement: '权限管理'
   },
   navbar: {
     logOut: '退出登录',
@@ -123,7 +124,10 @@ export default {
     unitName: '单位名称',
     address: '地址',
     telePhone: '电话',
-    addChildUnit: '添加下级单位'
+    addChildUnit: '添加下级单位',
+    permName: '权限名称',
+    permType: '权限类型',
+    permCode: '权限标识'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

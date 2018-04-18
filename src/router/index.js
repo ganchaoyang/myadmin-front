@@ -102,6 +102,23 @@ export const asyncRouterMap = [
   },
 
   {
+    path: '/perm',
+    component: Layout,
+    redirct: '/perm/index',
+    meta: { roles: ['admin'] },
+    children: [{
+      path: 'index',
+      component: _import('perm/index'),
+      name: 'permManagement',
+      meta: {
+        title: 'permManagement',
+        icon: 'role',
+        roles: ['admin']
+      }
+    }]
+  },
+
+  {
     path: '/icon',
     component: Layout,
     children: [{

@@ -49,7 +49,8 @@ export default {
     i18n: 'I18n',
     userManagement: 'UserManagement',
     roleManagement: 'RoleManagement',
-    unitManagement: 'UnitManagement'
+    unitManagement: 'UnitManagement',
+    permManagement: 'PermManagement'
   },
   navbar: {
     logOut: 'Log Out',
@@ -123,7 +124,10 @@ export default {
     unitName: 'Name',
     address: 'Address',
     telePhone: 'TelePhone',
-    addChildUnit: 'AddChildUnit'
+    addChildUnit: 'AddChildUnit',
+    permName: 'Name',
+    permType: 'Type',
+    permCode: 'Code'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
