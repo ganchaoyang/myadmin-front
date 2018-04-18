@@ -29,7 +29,7 @@
                 </el-button>
                 <el-button v-if="scope.row.disabled" size="mini" type="success">{{$t('table.enable')}}
                 </el-button>
-                <el-button size="mini" type="danger">{{$t('table.delete')}}
+                <el-button size="mini" type="danger" @click="deleteRoleHandle(scope.row.id)">{{$t('table.delete')}}
                 </el-button>
             </template>
         </el-table-column>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { findAll, addRole } from '@/api/role'
+import { findAll, addRole, deleteRole } from '@/api/role'
 import { Message } from 'element-ui'
 
 export default {
@@ -146,6 +146,17 @@ export default {
           }
         })
       }
+    },
+    deleteRoleHandle(id) {
+      deleteRole(id).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          Message.success(data.data)
+          this.getList()
+        } else {
+          Message.error('删除失败！')
+        }
+      })
     }
   }
 }
