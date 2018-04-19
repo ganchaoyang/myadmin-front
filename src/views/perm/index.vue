@@ -25,7 +25,7 @@
           <template slot-scope="scope">
               <el-button size="mini" type="success" @click="addChildHandle(scope.row)">{{$t('table.addChildPerm')}}</el-button>
               <el-button size="mini" type="success" @click="editHandle(scope.row)">{{$t('table.edit')}}</el-button>
-              <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
+              <el-button size="mini" type="danger" @click="deletePermHandle(scope.row.id)">{{$t('table.delete')}}</el-button>
           </template>
       </el-table-column>
     </tree-table>
@@ -81,7 +81,7 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll, addPerm, editPerm } from '@/api/perm'
+import { findAll, addPerm, editPerm, deletePerm } from '@/api/perm'
 import { Message } from 'element-ui'
 
 export default {
@@ -270,6 +270,17 @@ export default {
           }
         })
       }
+    },
+    deletePermHandle(id) {
+      deletePerm(id).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          Message.success(data.data)
+          this.permsTree()
+        } else {
+          Message.error(data.data)
+        }
+      })
     }
   }
 }

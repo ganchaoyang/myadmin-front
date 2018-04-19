@@ -25,3 +25,10 @@ export function editPerm(perm) {
     data
   })
 }
+
+export function deletePerm(id) {
+  return request({
+    url: '/perm/delete/' + id,
+    method: 'delete'
+  })
+}
