@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column :label="$t('table.action')">
           <template slot-scope="scope">
-              <el-button size="mini" type="success">{{$t('table.addChildUnit')}}</el-button>
+              <el-button size="mini" type="success" @click="addChildHandle(scope.row)">{{$t('table.addChildPerm')}}</el-button>
               <el-button size="mini" type="success">{{$t('table.edit')}}</el-button>
               <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
           </template>
@@ -207,17 +207,34 @@ export default {
           this.dialog.nextText = '提 交'
         }
         if (this.dialog.addStepActive === 2) {
-          addPerm(this.submitPerm).then(Response => {
-            const data = Response.data
-            if (data.code === 0) {
-              Message.success(data.data)
-              this.restoreDialog()
-              this.permsTree()
-            } else {
-              Message.error(data.data)
-            }
-          })
+          this.submitData()
         }
+      } else if (this.dialog.type === 'addChild') {
+        this.submitData()
+      }
+    },
+    addChildHandle(data) {
+      this.dialog.nextText = '提 交'
+      this.dialog.dialogVisible = true
+      this.dialog.addStep = false
+      this.dialog.addPermTreeVisible = false
+      this.dialog.addFormVisible = true
+      this.dialog.type = 'addChild'
+      this.submitPerm.parentId = data.id
+      this.parentPermName = data.name
+    },
+    submitData() {
+      if (this.dialog.type === 'add' || this.dialog.type === 'addChild') {
+        addPerm(this.submitPerm).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.restoreDialog()
+            this.permsTree()
+          } else {
+            Message.error(data.data)
+          }
+        })
       }
     }
   }

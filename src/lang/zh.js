@@ -127,7 +127,8 @@ export default {
     addChildUnit: '添加下级单位',
     permName: '权限名称',
     permType: '权限类型',
-    permCode: '权限标识'
+    permCode: '权限标识',
+    addChildPerm: '添加下级权限'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',

@@ -127,7 +127,8 @@ export default {
     addChildUnit: 'AddChildUnit',
     permName: 'Name',
     permType: 'Type',
-    permCode: 'Code'
+    permCode: 'Code',
+    addChildPerm: 'AddChildPerm'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
