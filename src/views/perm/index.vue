@@ -81,7 +81,8 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll } from '@/api/perm'
+import { findAll, addPerm } from '@/api/perm'
+import { Message } from 'element-ui'
 
 export default {
   name: 'PermTreeTable',
@@ -184,6 +185,7 @@ export default {
       this.submitPerm.disabled = false
     },
     restoreDialog() {
+      this.parentPermName = ''
       this.dialog.type = 'add'
       this.dialog.title = '添加权限'
       this.dialog.dialogVisible = false
@@ -203,6 +205,18 @@ export default {
           this.dialog.addFormVisible = true
           this.dialog.addPermTreeVisible = false
           this.dialog.nextText = '提 交'
+        }
+        if (this.dialog.addStepActive === 2) {
+          addPerm(this.submitPerm).then(Response => {
+            const data = Response.data
+            if (data.code === 0) {
+              Message.success(data.data)
+              this.restoreDialog()
+              this.permsTree()
+            } else {
+              Message.error(data.data)
+            }
+          })
         }
       }
     }

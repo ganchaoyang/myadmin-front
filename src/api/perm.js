@@ -7,3 +7,12 @@ export function findAll(tree) {
     params: { tree }
   })
 }
+
+export function addPerm(perm) {
+  const data = perm
+  return request({
+    url: '/perm/add',
+    method: 'post',
+    data
+  })
+}
