@@ -16,3 +16,12 @@ export function addPerm(perm) {
     data
   })
 }
+
+export function editPerm(perm) {
+  const data = perm
+  return request({
+    url: '/perm/edit',
+    method: 'put',
+    data
+  })
+}

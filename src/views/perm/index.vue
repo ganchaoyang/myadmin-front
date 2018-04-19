@@ -81,7 +81,7 @@
 
 import treeTable from '@/components/TreeTable'
 import treeToArray from '@/utils/customEval'
-import { findAll, addPerm } from '@/api/perm'
+import { findAll, addPerm, editPerm } from '@/api/perm'
 import { Message } from 'element-ui'
 
 export default {
@@ -209,7 +209,8 @@ export default {
         if (this.dialog.addStepActive === 2) {
           this.submitData()
         }
-      } else if (this.dialog.type === 'addChild') {
+      } else if (this.dialog.type === 'addChild' ||
+       this.dialog.type === 'edit') {
         this.submitData()
       }
     },
@@ -245,8 +246,20 @@ export default {
       this.permTypeChange(this.submitPerm.type)
     },
     submitData() {
-      if (this.dialog.type === 'add' || this.dialog.type === 'addChild') {
+      if (this.dialog.type === 'add' ||
+       this.dialog.type === 'addChild') {
         addPerm(this.submitPerm).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.restoreDialog()
+            this.permsTree()
+          } else {
+            Message.error(data.data)
+          }
+        })
+      } else if (this.dialog.type === 'edit') {
+        editPerm(this.submitPerm).then(Response => {
           const data = Response.data
           if (data.code === 0) {
             Message.success(data.data)
