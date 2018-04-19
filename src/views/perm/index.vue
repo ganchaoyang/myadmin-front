@@ -24,7 +24,7 @@
       <el-table-column :label="$t('table.action')">
           <template slot-scope="scope">
               <el-button size="mini" type="success" @click="addChildHandle(scope.row)">{{$t('table.addChildPerm')}}</el-button>
-              <el-button size="mini" type="success">{{$t('table.edit')}}</el-button>
+              <el-button size="mini" type="success" @click="editHandle(scope.row)">{{$t('table.edit')}}</el-button>
               <el-button size="mini" type="danger">{{$t('table.delete')}}</el-button>
           </template>
       </el-table-column>
@@ -59,8 +59,8 @@
         <el-form-item label="标识:" prop="code">
           <el-input v-model="submitPerm.code" placeholder="请输入2-8位以内字符"></el-input>
         </el-form-item>
-        <el-form-item label="URL:" prop="url" v-show="dialog.form.urlVisible">
-          <el-input v-model="submitPerm.url" placeholder="请输入2-16位以内字符"></el-input>
+        <el-form-item label="URL:" prop="href" v-show="dialog.form.urlVisible">
+          <el-input v-model="submitPerm.href" placeholder="请输入2-16位以内字符"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="icon" v-show="dialog.form.iconVisible">
           <el-input v-model="submitPerm.icon" placeholder="请输入2-16位以内字符"></el-input>
@@ -126,7 +126,7 @@ export default {
         type: 'menu',
         name: null,
         code: null,
-        url: null,
+        href: null,
         icon: null,
         disabled: false
       },
@@ -165,7 +165,7 @@ export default {
     },
     permTypeChange(data) {
       if (data === 'data') {
-        this.submitPerm.url = null
+        this.submitPerm.href = null
         this.submitPerm.icon = null
         this.dialog.form.urlVisible = false
         this.dialog.form.iconVisible = false
@@ -180,7 +180,7 @@ export default {
       this.submitPerm.type = 'menu'
       this.submitPerm.name = null
       this.submitPerm.code = null
-      this.submitPerm.url = null
+      this.submitPerm.href = null
       this.submitPerm.icon = null
       this.submitPerm.disabled = false
     },
@@ -222,6 +222,27 @@ export default {
       this.dialog.type = 'addChild'
       this.submitPerm.parentId = data.id
       this.parentPermName = data.name
+    },
+    editHandle(data) {
+      this.submitPerm.id = data.id
+      this.submitPerm.parentId = data.parentId
+      this.submitPerm.type = data.type
+      this.submitPerm.name = data.name
+      this.submitPerm.code = data.code
+      this.submitPerm.href = data.href
+      this.submitPerm.icon = data.icon
+      this.submitPerm.disabled = data.disabled
+      this.dialog.addStep = false
+      this.dialog.addPermTreeVisible = false
+      this.dialog.title = '编辑权限'
+      this.dialog.dialogVisible = true
+      this.dialog.addFormVisible = true
+      this.dialog.nextText = '提 交'
+      this.dialog.type = 'edit'
+      if (!(data.parentId === null)) {
+        this.parentPermName = data.parent.name
+      }
+      this.permTypeChange(this.submitPerm.type)
     },
     submitData() {
       if (this.dialog.type === 'add' || this.dialog.type === 'addChild') {
