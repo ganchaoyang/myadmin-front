@@ -27,14 +27,15 @@
                 <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
                 <el-button size="mini" type="danger" @click="deleteRoleHandle(scope.row.id)">{{$t('table.delete')}}
                 </el-button>
-                <el-dropdown style="margin-left: 8px;">
+                <el-dropdown style="margin-left: 8px;" @command="moreActionsHandle">
                   <el-button type="primary" size="mini">
                     更多菜单<i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>禁用</el-dropdown-item>
-                    <el-dropdown-item>分配用户</el-dropdown-item>
-                    <el-dropdown-item>分配权限</el-dropdown-item>
+                    <el-dropdown-item v-if="!scope.row.disabled" :command="scope.row.id + ',' + 'disabled'">禁用</el-dropdown-item>
+                    <el-dropdown-item v-if="scope.row.disabled" :command="scope.row.id + ',' + 'enabled'">启用</el-dropdown-item>
+                    <el-dropdown-item :command="scope.row.id + ',' + 'assignUsers'">分配用户</el-dropdown-item>
+                    <el-dropdown-item :command="scope.row.id + ',' + 'assignPerms'">分配权限</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
             </template>
@@ -163,6 +164,26 @@ export default {
           Message.error('删除失败！')
         }
       })
+    },
+    moreActionsHandle(commands) {
+      const commandArr = commands.split(',')
+      const action = commandArr[1]
+      if (action === 'disabled') {
+        console.log('禁用')
+      } else if (action === 'enabled') {
+        console.log('启用')
+      } else if (action === 'assignUsers') {
+        this.$router.push({
+          path: '/role/assign/user/index',
+          name: 'assignUser',
+          query: {
+            id: commandArr[0]
+          }
+        })
+        console.log('分配用户')
+      } else if (action === 'assignPerms') {
+        console.log('分配权限')
+      }
     }
   }
 }

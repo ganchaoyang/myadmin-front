@@ -7,6 +7,13 @@ export function findAll() {
   })
 }
 
+export function findById(id) {
+  return request({
+    url: '/role/data/' + id,
+    method: 'get'
+  })
+}
+
 export function addRole(role) {
   const data = role
   return request({

@@ -50,7 +50,8 @@ export default {
     userManagement: '用户管理',
     roleManagement: '角色管理',
     unitManagement: '单位管理',
-    permManagement: '权限管理'
+    permManagement: '权限管理',
+    assignUsers: '分配用户'
   },
   navbar: {
     logOut: '退出登录',

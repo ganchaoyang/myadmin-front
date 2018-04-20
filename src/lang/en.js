@@ -50,7 +50,8 @@ export default {
     userManagement: 'UserManagement',
     roleManagement: 'RoleManagement',
     unitManagement: 'UnitManagement',
-    permManagement: 'PermManagement'
+    permManagement: 'PermManagement',
+    assignUsers: 'AssignUsers'
   },
   navbar: {
     logOut: 'Log Out',
