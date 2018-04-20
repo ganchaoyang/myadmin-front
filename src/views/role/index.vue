@@ -25,12 +25,18 @@
         <el-table-column align="center" :label="$t('table.action')" min-width="200px">
             <template slot-scope="scope">
                 <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
-                <el-button v-if="!scope.row.disabled" size="mini" type="danger">{{$t('table.disabled')}}
-                </el-button>
-                <el-button v-if="scope.row.disabled" size="mini" type="success">{{$t('table.enable')}}
-                </el-button>
                 <el-button size="mini" type="danger" @click="deleteRoleHandle(scope.row.id)">{{$t('table.delete')}}
                 </el-button>
+                <el-dropdown style="margin-left: 8px;">
+                  <el-button type="primary" size="mini">
+                    更多菜单<i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>禁用</el-dropdown-item>
+                    <el-dropdown-item>分配用户</el-dropdown-item>
+                    <el-dropdown-item>分配权限</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
             </template>
         </el-table-column>
       </el-table>
