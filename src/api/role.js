@@ -30,3 +30,12 @@ export function deleteRole(id) {
   })
 }
 
+export function updateRole(role) {
+  const data = role
+  return request({
+    url: '/role/edit',
+    method: 'put',
+    data
+  })
+}
+
