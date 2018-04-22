@@ -60,6 +60,7 @@
           node-key="id"
           :props="tree.defaultProps"
           :default-checked-keys="tree.defaultCheckedKeys"
+          @check-change="handleCheckChange"
           default-expand-all
           v-show="dialog.assignPermsTreeVisible">
         </el-tree>
@@ -72,7 +73,7 @@
 </template>
 
 <script>
-import { findAll, addRole, deleteRole, findById } from '@/api/role'
+import { findAll, addRole, deleteRole, findById, updateRole } from '@/api/role'
 import { findAll as findAllPerms } from '@/api/perm'
 import { Message } from 'element-ui'
 
@@ -190,6 +191,17 @@ export default {
             Message.error(data.data)
           }
         })
+      } else if (this.dialog.type === 'assignPerms') { // 分配权限。
+        updateRole(this.submitRole).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.cancleDialogHandle()
+            this.getList()
+          } else {
+            Message.error(data.data)
+          }
+        })
       }
     },
     deleteRoleHandle(id) {
@@ -245,7 +257,18 @@ export default {
           })
           this.initAllPerm()
         }
+        console.log(this.submitRole.perms)
       })
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      if (checked) {
+        if (this.submitRole.perms.findIndex(item => item.id === data.id) === -1) {
+          this.submitRole.perms.push(data)
+        }
+      } else {
+        this.submitRole.perms.splice(this.submitRole.perms.findIndex(item => item.id === data.id), 1)
+      }
+      console.log(this.submitRole.perms)
     }
   }
 }
