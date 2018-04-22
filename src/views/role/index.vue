@@ -172,6 +172,11 @@ export default {
       this.dialog.dialogVisible = false
       this.restoreSubmitData()
       this.permsUnderTheRole = null
+      this.dialog.type = 'add'
+      this.dialog.assignPermsTreeVisible = false
+      this.dialog.formVisible = true
+      this.dialog.title = '创建角色'
+      this.tree.defaultCheckedKeys = []
     },
     nextStepDialogHandle() {
       if (this.dialog.type === 'add') { // 添加角色。
@@ -222,6 +227,7 @@ export default {
       this.dialog.dialogVisible = true
       this.dialog.assignPermsTreeVisible = true
       this.dialog.formVisible = false
+      this.dialog.title = '分配权限'
       findById(id).then(Response => {
         const data = Response.data
         if (data.code === 0) {
