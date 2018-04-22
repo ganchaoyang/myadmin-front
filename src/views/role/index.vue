@@ -54,6 +54,15 @@
             <el-switch v-model="submitRole.disabled"></el-switch>
           </el-form-item>
         </el-form>
+        <el-tree
+          :data="allPerms"
+          show-checkbox
+          node-key="id"
+          :props="tree.defaultProps"
+          :default-checked-keys="tree.defaultCheckedKeys"
+          default-expand-all
+          v-show="dialog.assignPermsTreeVisible">
+        </el-tree>
         <span slot="footer" class="dialog-footer">
           <el-button @click="cancleDialogHandle()">取 消</el-button>
           <el-button type="primary" @click="nextStepDialogHandle()">{{dialog.nextText}}</el-button>
@@ -63,7 +72,8 @@
 </template>
 
 <script>
-import { findAll, addRole, deleteRole } from '@/api/role'
+import { findAll, addRole, deleteRole, findById } from '@/api/role'
+import { findAll as findAllPerms } from '@/api/perm'
 import { Message } from 'element-ui'
 
 export default {
@@ -73,18 +83,23 @@ export default {
       listLoading: true,
       list: [],
       data: [],
+      allPerms: [],
+      permsUnderTheRole: [],
       queryRoleName: '',
       dialog: {
         type: 'add',
         title: '创建角色',
         dialogVisible: false,
         formVisible: true,
+        assignPermsTreeVisible: false,
         nextText: '提 交'
       },
       submitRole: {
-        name: '',
-        note: '',
-        disabled: false
+        id: null,
+        name: null,
+        note: null,
+        disabled: false,
+        perms: null
       },
       rules: {
         addRules: {
@@ -97,6 +112,13 @@ export default {
             { max: 10, message: '长度在10个字符以内', triiger: 'blur' }
           ]
         }
+      },
+      tree: {
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        },
+        defaultCheckedKeys: []
       }
     }
   },
@@ -118,6 +140,14 @@ export default {
         this.listLoading = false
       })
     },
+    initAllPerm() {
+      findAllPerms(true).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          this.allPerms = data.data
+        }
+      })
+    },
     statusName(status) {
       const statusNameList = ['table.disabled', 'table.enable']
       return statusNameList[status ? 0 : 1]
@@ -132,13 +162,16 @@ export default {
       this.list = temp
     },
     restoreSubmitData() {
-      this.submitRole.name = ''
-      this.submitRole.note = ''
+      this.submitRole.name = null
+      this.submitRole.note = null
+      this.submitRole.id = null
+      this.submitRole.perms = null
       this.submitRole.disabled = false
     },
     cancleDialogHandle() {
       this.dialog.dialogVisible = false
       this.restoreSubmitData()
+      this.permsUnderTheRole = null
     },
     nextStepDialogHandle() {
       if (this.dialog.type === 'add') { // 添加角色。
@@ -180,10 +213,33 @@ export default {
             id: commandArr[0]
           }
         })
-        console.log('分配用户')
       } else if (action === 'assignPerms') {
-        console.log('分配权限')
+        this.assignPermsHandle(commandArr[0])
       }
+    },
+    assignPermsHandle(id) {
+      this.dialog.type = 'assignPerms'
+      this.dialog.dialogVisible = true
+      this.dialog.assignPermsTreeVisible = true
+      this.dialog.formVisible = false
+      findById(id).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          this.permsUnderTheRole = data.data.perms
+          this.submitRole.id = data.data.id
+          this.submitRole.name = data.data.name
+          this.submitRole.note = data.data.note
+          this.submitRole.perms = this.permsUnderTheRole
+          this.submitRole.disabled = data.data.disabled
+          this.tree.defaultCheckedKeys = []
+          this.permsUnderTheRole.forEach(element => {
+            if (!element.hasChildren) {
+              this.tree.defaultCheckedKeys.push(element.id)
+            }
+          })
+          this.initAllPerm()
+        }
+      })
     }
   }
 }
