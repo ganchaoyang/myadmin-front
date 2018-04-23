@@ -3,7 +3,7 @@
     <div class="filter-container">
         <el-input style="width: 300px;" class="filter-item" :placeholder="$t('table.unitName')" v-model="queryRoleName"></el-input>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchHandle">{{$t('table.search')}}</el-button>
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = true">{{$t('table.add')}}</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = this.dialog.formVisible = true">{{$t('table.add')}}</el-button>
       </div>
       <el-table :key="tableKey" :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row 
       style="width: 100%">
@@ -24,7 +24,7 @@
         </el-table-column>
         <el-table-column align="center" :label="$t('table.action')" min-width="200px">
             <template slot-scope="scope">
-                <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
+                <el-button type="primary" size="mini" @click="editRoleHandle(scope.row)">{{$t('table.edit')}}</el-button>
                 <el-button size="mini" type="danger" @click="deleteRoleHandle(scope.row.id)">{{$t('table.delete')}}
                 </el-button>
                 <el-dropdown style="margin-left: 8px;" @command="moreActionsHandle">
@@ -91,7 +91,7 @@ export default {
         type: 'add',
         title: '创建角色',
         dialogVisible: false,
-        formVisible: true,
+        formVisible: false,
         assignPermsTreeVisible: false,
         nextText: '提 交'
       },
@@ -175,14 +175,14 @@ export default {
       this.permsUnderTheRole = null
       this.dialog.type = 'add'
       this.dialog.assignPermsTreeVisible = false
-      this.dialog.formVisible = true
+      this.dialog.formVisible = false
       this.dialog.title = '创建角色'
       this.tree.defaultCheckedKeys = []
     },
     nextStepDialogHandle() {
       if (this.dialog.type === 'add') { // 添加角色。
         this.submitData()
-      } else if (this.dialog.type === 'assignPerms') { // 分配权限。
+      } else if (this.dialog.type === 'assignPerms' || this.dialog.type === 'edit') { // 分配权限或者编辑角色。
         this.submitData()
       }
     },
@@ -257,6 +257,17 @@ export default {
       this.submitRole.disabled = disabled
       this.dialog.type = 'edit'
       this.submitData()
+    },
+    editRoleHandle(role) {
+      this.submitRole.id = role.id
+      this.submitRole.name = role.name
+      this.submitRole.note = role.note
+      this.submitRole.disabled = role.disabled
+      this.submitRole.perms = null
+      this.dialog.title = '编辑角色'
+      this.dialog.type = 'edit'
+      this.dialog.formVisible = true
+      this.dialog.dialogVisible = true
     },
     submitData() { // 提交添加角色，修改角色的数据。
       if (this.dialog.type === 'add') {
