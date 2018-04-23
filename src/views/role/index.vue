@@ -181,27 +181,9 @@ export default {
     },
     nextStepDialogHandle() {
       if (this.dialog.type === 'add') { // 添加角色。
-        addRole(this.submitRole).then(Response => {
-          const data = Response.data
-          if (data.code === 0) {
-            Message.success(data.data)
-            this.cancleDialogHandle()
-            this.getList()
-          } else {
-            Message.error(data.data)
-          }
-        })
+        this.submitData()
       } else if (this.dialog.type === 'assignPerms') { // 分配权限。
-        updateRole(this.submitRole).then(Response => {
-          const data = Response.data
-          if (data.code === 0) {
-            Message.success(data.data)
-            this.cancleDialogHandle()
-            this.getList()
-          } else {
-            Message.error(data.data)
-          }
-        })
+        this.submitData()
       }
     },
     deleteRoleHandle(id) {
@@ -219,9 +201,9 @@ export default {
       const commandArr = commands.split(',')
       const action = commandArr[1]
       if (action === 'disabled') {
-        console.log('禁用')
+        this.disabledOrenabledHandule(true, commandArr[0])
       } else if (action === 'enabled') {
-        console.log('启用')
+        this.disabledOrenabledHandule(false, commandArr[0])
       } else if (action === 'assignUsers') {
         this.$router.push({
           path: '/role/assign/user/index',
@@ -243,6 +225,7 @@ export default {
       findById(id).then(Response => {
         const data = Response.data
         if (data.code === 0) {
+          // 将请求到的角色信息，赋值给相应的变量。
           this.permsUnderTheRole = data.data.perms
           this.submitRole.id = data.data.id
           this.submitRole.name = data.data.name
@@ -257,7 +240,6 @@ export default {
           })
           this.initAllPerm()
         }
-        console.log(this.submitRole.perms)
       })
     },
     handleCheckChange(data, checked, indeterminate) {
@@ -269,6 +251,37 @@ export default {
         this.submitRole.perms.splice(this.submitRole.perms.findIndex(item => item.id === data.id), 1)
       }
       console.log(this.submitRole.perms)
+    },
+    disabledOrenabledHandule(disabled, id) {
+      this.submitRole.id = id
+      this.submitRole.disabled = disabled
+      this.dialog.type = 'edit'
+      this.submitData()
+    },
+    submitData() { // 提交添加角色，修改角色的数据。
+      if (this.dialog.type === 'add') {
+        addRole(this.submitRole).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.cancleDialogHandle()
+            this.getList()
+          } else {
+            Message.error(data.data)
+          }
+        })
+      } else if (this.dialog.type === 'assignPerms' || this.dialog.type === 'edit') {
+        updateRole(this.submitRole).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            this.cancleDialogHandle()
+            this.getList()
+          } else {
+            Message.error(data.data)
+          }
+        })
+      }
     }
   }
 }
