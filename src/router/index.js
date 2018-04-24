@@ -74,14 +74,14 @@ export const asyncRouterMap = [
     name: 'sysManagement',
     meta: {
       title: 'sysManagement',
-      icon: 'people'
+      icon: 'sys'
     },
     children: [
       {
         path: 'user',
         component: _import('user/index'),
         name: 'userManagement',
-        meta: { title: 'userManagement', icon: 'people', note: 'sys.user' }
+        meta: { title: 'userManagement', icon: 'user', note: 'sys.user' }
       },
       {
         path: 'role',
@@ -93,13 +93,13 @@ export const asyncRouterMap = [
         path: 'unit',
         component: _import('unit/index'),
         name: 'unitManagement',
-        meta: { title: 'unitManagement', icon: 'role', note: 'sys.unit' }
+        meta: { title: 'unitManagement', icon: 'unit', note: 'sys.unit' }
       },
       {
         path: 'perm',
         component: _import('perm/index'),
         name: 'permManagement',
-        meta: { title: 'permManagement', icon: 'role', note: 'sys.user' }
+        meta: { title: 'permManagement', icon: 'perm', note: 'sys.user' }
       }
     ]
   },
