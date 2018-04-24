@@ -3,7 +3,7 @@
     <div class="filter-container">
         <el-input style="width: 300px;" class="filter-item" :placeholder="$t('table.unitName')" v-model="queryRoleName"></el-input>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchHandle">{{$t('table.search')}}</el-button>
-        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = this.dialog.formVisible = true">{{$t('table.add')}}</el-button>
+        <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="dialog.dialogVisible = dialog.formVisible = true">{{$t('table.add')}}</el-button>
       </div>
       <el-table :key="tableKey" :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row 
       style="width: 100%">
