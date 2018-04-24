@@ -42,6 +42,21 @@ export const constantRouterMap = [
       name: 'dashboard',
       meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
     }]
+  },
+  {
+    path: '/role/assign/users',
+    component: Layout,
+    redirct: '/role/assign/user/index',
+    children: [{
+      path: 'index',
+      name: 'assignUsers',
+      component: _import('role/assignUsers'),
+      meta: {
+        title: 'assignUsers',
+        note: 'sys.role.edit'
+      }
+    }],
+    hidden: true
   }
 ]
 
@@ -53,85 +68,40 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/user',
+    path: '/sys',
     component: Layout,
-    redirect: '/user/index',
-    meta: { roles: ['admin'] },
-    children: [{
-      path: 'index',
-      component: _import('user/index'),
-      name: 'userManagement',
-      meta: {
-        title: 'userManagement',
-        icon: 'people',
-        roles: ['admin']
+    redirect: 'noredirect',
+    name: 'sysManagement',
+    meta: {
+      title: 'sysManagement',
+      icon: 'people'
+    },
+    children: [
+      {
+        path: 'user',
+        component: _import('user/index'),
+        name: 'userManagement',
+        meta: { title: 'userManagement', icon: 'people', note: 'sys.user' }
+      },
+      {
+        path: 'role',
+        component: _import('role/index'),
+        name: 'roleManagement',
+        meta: { title: 'roleManagement', icon: 'role', note: 'sys.role' }
+      },
+      {
+        path: 'unit',
+        component: _import('unit/index'),
+        name: 'unitManagement',
+        meta: { title: 'unitManagement', icon: 'role', note: 'sys.unit' }
+      },
+      {
+        path: 'perm',
+        component: _import('perm/index'),
+        name: 'permManagement',
+        meta: { title: 'permManagement', icon: 'role', note: 'sys.user' }
       }
-    }]
-  },
-  {
-    path: '/role',
-    component: Layout,
-    redirct: '/role/index',
-    meta: { roles: ['admin'] },
-    children: [{
-      path: 'index',
-      component: _import('role/index'),
-      name: 'roleManagement',
-      meta: {
-        title: 'roleManagement',
-        icon: 'role',
-        roles: ['admin']
-      }
-    }]
-  },
-  {
-    path: '/role/assign/users',
-    component: Layout,
-    meta: { roles: ['admin'] },
-    redirct: '/role/assign/user/index',
-    children: [{
-      path: 'index',
-      name: 'assignUser',
-      component: _import('role/assignUsers'),
-      meta: {
-        title: 'assignUsers',
-        roles: ['admin']
-      }
-    }],
-    hidden: true
-  },
-  {
-    path: '/unit',
-    component: Layout,
-    redirct: '/unit/index',
-    meta: { roles: ['admin'] },
-    children: [{
-      path: 'index',
-      component: _import('unit/index'),
-      name: 'unitManagement',
-      meta: {
-        title: 'unitManagement',
-        icon: 'role',
-        roles: ['admin']
-      }
-    }]
-  },
-
-  {
-    path: '/perm',
-    component: Layout,
-    redirct: '/perm/index',
-    meta: { roles: ['admin'] },
-    children: [{
-      path: 'index',
-      component: _import('perm/index'),
-      name: 'permManagement',
-      meta: {
-        title: 'permManagement',
-        icon: 'role',
-        roles: ['admin']
-      }
-    }]
+    ]
   },
 
   {

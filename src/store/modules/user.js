@@ -11,6 +11,7 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    perms: [],
     setting: {
       articlePlatform: []
     }
@@ -40,6 +41,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_PERMS: (state, perms) => {
+      state.perms = perms
     }
   },
 
@@ -49,11 +53,9 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
-          console.log(response.data.data)
           const data = response.data.data
           commit('SET_TOKEN', data.token)
           setToken(response.data.data.token)
-          console.log(getToken())
           resolve()
         }).catch(error => {
           reject(error)
@@ -76,6 +78,7 @@ const user = {
           commit('SET_NAME', data.loginName)
           commit('SET_AVATAR', '')
           commit('SET_INTRODUCTION', '')
+          commit('SET_PERMS', data.perms)
           resolve(response)
         }).catch(error => {
           reject(error)

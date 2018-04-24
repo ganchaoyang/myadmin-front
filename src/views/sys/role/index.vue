@@ -207,7 +207,7 @@ export default {
       } else if (action === 'assignUsers') {
         this.$router.push({
           path: '/role/assign/user/index',
-          name: 'assignUsers',
+          name: 'assignUser',
           query: {
             id: commandArr[0]
           }
