@@ -6,8 +6,8 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  * @param route
  */
 function hasPermission(perms, route) {
-  if (route.meta && route.meta.note) {
-    return perms.some(perm => route.meta.note === perm.note)
+  if (route.meta && route.meta.code) {
+    return perms.some(perm => route.meta.code === perm.code)
   } else {
     return true
   }
