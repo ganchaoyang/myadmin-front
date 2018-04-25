@@ -8,9 +8,9 @@ import { getToken } from '@/utils/auth' // getToken from cookie
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
 // permissiom judge function
-function hasPermission(perms, note) {
-  if (!note) return true
-  return perms.some(perm => note === perm.note)
+function hasPermission(perms, code) {
+  if (!code) return true
+  return perms.some(perm => code === perm.code)
 }
 
 const whiteList = ['/login', '/authredirect']// no redirect whitelist
@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
         })
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (hasPermission(store.getters.perms, to.meta.note)) {
+        if (hasPermission(store.getters.perms, to.meta.code)) {
           next()//
         } else {
           next({ path: '/401', replace: true, query: { noGoBack: true }})

@@ -53,7 +53,7 @@ export const constantRouterMap = [
       component: _import('role/assignUsers'),
       meta: {
         title: 'assignUsers',
-        note: 'sys.role.edit'
+        code: 'sys.role.edit'
       }
     }],
     hidden: true
@@ -81,25 +81,25 @@ export const asyncRouterMap = [
         path: 'user',
         component: _import('user/index'),
         name: 'userManagement',
-        meta: { title: 'userManagement', icon: 'user', note: 'sys.user' }
+        meta: { title: 'userManagement', icon: 'user', code: 'sys.user' }
       },
       {
         path: 'role',
         component: _import('role/index'),
         name: 'roleManagement',
-        meta: { title: 'roleManagement', icon: 'role', note: 'sys.role' }
+        meta: { title: 'roleManagement', icon: 'role', code: 'sys.role' }
       },
       {
         path: 'unit',
         component: _import('unit/index'),
         name: 'unitManagement',
-        meta: { title: 'unitManagement', icon: 'unit', note: 'sys.unit' }
+        meta: { title: 'unitManagement', icon: 'unit', code: 'sys.unit' }
       },
       {
         path: 'perm',
         component: _import('perm/index'),
         name: 'permManagement',
-        meta: { title: 'permManagement', icon: 'perm', note: 'sys.user' }
+        meta: { title: 'permManagement', icon: 'perm', code: 'sys.user' }
       }
     ]
   },
