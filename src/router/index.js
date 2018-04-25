@@ -57,6 +57,21 @@ export const constantRouterMap = [
       }
     }],
     hidden: true
+  },
+  {
+    path: '/cms/article/add',
+    component: Layout,
+    redirct: '/cms/article/add/index',
+    children: [{
+      path: 'index',
+      name: 'addArticle',
+      component: _import('cms/article/editor'),
+      meta: {
+        title: 'addArticle',
+        code: 'cms.article.add'
+      }
+    }],
+    hidden: true
   }
 ]
 
@@ -100,6 +115,33 @@ export const asyncRouterMap = [
         component: _import('perm/index'),
         name: 'permManagement',
         meta: { title: 'permManagement', icon: 'perm', code: 'sys.user' }
+      }
+    ]
+  },
+
+  {
+    path: '/cms',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'cms',
+    meta: {
+      title: 'cms',
+      icon: 'cms',
+      code: 'cms'
+    },
+    children: [
+      {
+        path: 'article',
+        component: _import('cms/article/index'),
+        name: 'cmsArticleManagement',
+        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article' }
+      },
+      {
+        path: 'type',
+        component: _import('cms/article/index'),
+        name: 'cmsArticleManagement',
+        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article' },
+        hidden: true
       }
     ]
   },

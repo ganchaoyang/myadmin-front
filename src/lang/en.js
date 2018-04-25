@@ -52,7 +52,9 @@ export default {
     unitManagement: 'UnitManagement',
     permManagement: 'PermManagement',
     assignUsers: 'AssignUsers',
-    sysManagement: 'System'
+    sysManagement: 'System',
+    cms: 'CMS',
+    cmsArticleManagement: 'Article'
   },
   navbar: {
     logOut: 'Log Out',

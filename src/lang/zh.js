@@ -52,7 +52,9 @@ export default {
     unitManagement: '单位管理',
     permManagement: '权限管理',
     assignUsers: '分配用户',
-    sysManagement: '系统管理'
+    sysManagement: '系统管理',
+    cms: 'CMS',
+    cmsArticleManagement: '文章管理'
   },
   navbar: {
     logOut: '退出登录',
