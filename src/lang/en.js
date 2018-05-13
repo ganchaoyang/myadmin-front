@@ -47,14 +47,15 @@ export default {
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
-    userManagement: 'UserManagement',
-    roleManagement: 'RoleManagement',
-    unitManagement: 'UnitManagement',
-    permManagement: 'PermManagement',
+    userManagement: 'UserMS',
+    roleManagement: 'RoleMS',
+    unitManagement: 'UnitMS',
+    permManagement: 'PermMS',
     assignUsers: 'AssignUsers',
     sysManagement: 'System',
     cms: 'CMS',
-    cmsArticleManagement: 'Article'
+    cmsArticleManagement: 'Article',
+    addArticle: 'AddArticle'
   },
   navbar: {
     logOut: 'Log Out',

@@ -54,7 +54,8 @@ export default {
     assignUsers: '分配用户',
     sysManagement: '系统管理',
     cms: 'CMS',
-    cmsArticleManagement: '文章管理'
+    cmsArticleManagement: '文章管理',
+    addArticle: '添加文章'
   },
   navbar: {
     logOut: '退出登录',
