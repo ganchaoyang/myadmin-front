@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
       <el-form label-width="90px" label-position="left" ref="roleForm">
-        <div class="components-container">
           <el-form-item label="文章标题：" size="large">
             <el-input v-model="article.title" placeholder="请输入文章标题"></el-input>
           </el-form-item>
@@ -11,12 +10,9 @@
           <el-form-item label="公 开:" prop="disabled">
             <el-switch v-model="mode"></el-switch>
           </el-form-item>
-          <div class="editor-container">
-              <markdown-editor id="article-content" ref="contentEditor" v-model="article.content" :height="300" :zIndex="20"></markdown-editor>
-          </div>
-          <el-button style="margin-top:80px;" type="primary" icon="el-icon-circle-check-outline" @click="submitData()">提 交</el-button>
-        </div>
+          <markdown-editor id="article-content" ref="contentEditor" v-model="article.content"></markdown-editor>
       </el-form>
+      <el-button style="margin-top:50px;" type="primary" icon="el-icon-circle-check-outline" @click="submitData()">提 交</el-button>
   </div>
 </template>
 
@@ -59,6 +55,7 @@ export default {
         const data = Response.data
         if (data.code === 0) {
           Message.success(data.data)
+          location.reload()
         } else {
           Message.error(data.data)
         }
