@@ -8,3 +8,12 @@ export function addArticle(article) {
     data: article
   })
 }
+
+// 获取文章列表。
+// pageNum: 当前页，pageSize：每页数据量。
+export function findAll(pageNum, pageSize) {
+  return request({
+    url: '/cms/article/all?pageNum=' + pageNum + '&pageSize=' + pageSize,
+    method: 'get'
+  })
+}

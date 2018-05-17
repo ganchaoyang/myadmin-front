@@ -96,6 +96,7 @@ export default {
     dragTips1: 'The default order',
     dragTips2: 'The after dragging order',
     title: 'Title',
+    subtitle: 'Subtitle',
     importance: 'Imp',
     type: 'Type',
     remark: 'Remark',
