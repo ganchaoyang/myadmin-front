@@ -1,5 +1,5 @@
 <template>
-  <div class="simplemde-container" :style="{height:height+'px',zIndex:zIndex}">
+  <div class="simplemde-container" :style="{zIndex:zIndex}">
     <textarea :id="id">
     </textarea>
   </div>

@@ -19,7 +19,7 @@
 <script>
 
 import MarkdownEditor from '@/components/MarkdownEditor'
-import { addArticle } from '@/api/cms/article'
+import { addArticle, findById, editArticle } from '@/api/cms/article'
 import { Message } from 'element-ui'
 
 export default {
@@ -27,7 +27,9 @@ export default {
   components: { MarkdownEditor },
   data() {
     return {
+      edit: false,
       article: {
+        id: null,
         title: null,
         subtitle: null,
         content: null,
@@ -40,7 +42,35 @@ export default {
       mode: true
     }
   },
+  created() {
+    this.init()
+  },
   methods: {
+    init() {
+      const id = this.$route.query.id
+      if (!(id && typeof id === 'object')) { // 证明不为空
+        // 此时应该获取当前对象的数据。
+        console.log(id)
+        findById(id).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            this.article.title = data.data.title
+            this.article.subtitle = data.data.subtitle
+            this.article.content = data.data.content
+            this.article.contentType = data.data.contentType
+            this.article.mode = data.data.mode
+            this.article.id = data.data.id
+            this.editor.type = data.data.contentType
+            if (data.data.mode === 'PUBLIC') {
+              this.mode = true
+            } else {
+              this.mode = false
+            }
+            this.edit = true
+          }
+        })
+      }
+    },
     submitData() {
       // 首先需要设置article的内容语法。
       this.article.contentType = this.editor.type
@@ -50,16 +80,28 @@ export default {
       } else {
         this.article.mode = 'PRIVATE'
       }
-      // 调用接口提交数据。
-      addArticle(this.article).then(Response => {
-        const data = Response.data
-        if (data.code === 0) {
-          Message.success(data.data)
-          location.reload()
-        } else {
-          Message.error(data.data)
-        }
-      })
+      if (this.edit) {
+        editArticle(this.article).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            history.go(-1)
+          } else {
+            Message.error(data.data)
+          }
+        })
+      } else {
+        // 调用接口提交数据。
+        addArticle(this.article).then(Response => {
+          const data = Response.data
+          if (data.code === 0) {
+            Message.success(data.data)
+            history.go(-1)
+          } else {
+            Message.error(data.data)
+          }
+        })
+      }
     }
   }
 }

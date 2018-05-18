@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleSearch" style="width: 200px;" class="filter-item" :placeholder="$t('table.title')" v-model="listQuery.title">
       </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleSearch">{{$t('table.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="toEditorPage()">{{$t('table.add')}}</el-button>
     </div>
 
@@ -43,12 +43,12 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini">{{$t('table.edit')}}</el-button>
-          <el-button v-if="scope.row.status!='PUBLISHED'" size="mini" type="success" >{{$t('table.publish')}}
+          <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)">{{$t('table.edit')}}</el-button>
+          <el-button v-if="scope.row.status!='PUBLISHED'" size="mini" type="success" @click="handelUpdateStatus('PUBLISHED', scope.row)">{{$t('table.publish')}}
           </el-button>
-          <el-button v-if="scope.row.status!='DRAFT'" size="mini" >{{$t('table.draft')}}
+          <el-button v-if="scope.row.status!='DRAFT'" size="mini" @click="handelUpdateStatus('DRAFT', scope.row)">{{$t('table.draft')}}
           </el-button>
-          <el-button v-if="scope.row.status!='DELETED'" size="mini" type="danger" >{{$t('table.delete')}}
+          <el-button v-if="scope.row.status!='DELETED'" size="mini" type="danger" @click="handelUpdateStatus('DELETED', scope.row)">{{$t('table.delete')}}
           </el-button>
         </template>
       </el-table-column>  
@@ -62,7 +62,7 @@
 </template>
 <script>
 
-import { findAll } from '@/api/cms/article'
+import { findAll, editArticle } from '@/api/cms/article'
 import { Message } from 'element-ui'
 
 export default {
@@ -138,6 +138,25 @@ export default {
         }
       })
       this.list = temp
+    },
+    handleEdit(id) {
+      this.$router.push({
+        path: '/cms/article/add/index',
+        query: {
+          id: id
+        }
+      })
+    },
+    handelUpdateStatus(status, article) {
+      article.status = status
+      editArticle(article).then(Response => {
+        const data = Response.data
+        if (data.code === 0) {
+          Message.success(data.data)
+        } else {
+          Message.error(data.data)
+        }
+      })
     }
   }
 }

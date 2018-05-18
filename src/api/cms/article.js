@@ -17,3 +17,19 @@ export function findAll(pageNum, pageSize) {
     method: 'get'
   })
 }
+
+export function findById(id) {
+  return request({
+    url: '/cms/article/data/' + id,
+    method: 'get'
+  })
+}
+
+export function editArticle(article) {
+  return request({
+    url: '/cms/article/edit',
+    method: 'put',
+    data: article
+  })
+}
+
