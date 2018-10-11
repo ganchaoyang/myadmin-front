@@ -87,25 +87,25 @@ export const asyncRouterMap = [
         path: 'user',
         component: _import('user/index'),
         name: 'userManagement',
-        meta: { title: 'userManagement', icon: 'user', code: 'sys.user' }
+        meta: { title: 'userManagement', icon: 'user', code: 'sys.user.view' }
       },
       {
         path: 'role',
         component: _import('role/index'),
         name: 'roleManagement',
-        meta: { title: 'roleManagement', icon: 'role', code: 'sys.role' }
+        meta: { title: 'roleManagement', icon: 'role', code: 'sys.role.view' }
       },
       {
         path: 'unit',
         component: _import('unit/index'),
         name: 'unitManagement',
-        meta: { title: 'unitManagement', icon: 'unit', code: 'sys.unit' }
+        meta: { title: 'unitManagement', icon: 'unit', code: 'sys.unit.view' }
       },
       {
         path: 'perm',
         component: _import('perm/index'),
         name: 'permManagement',
-        meta: { title: 'permManagement', icon: 'perm', code: 'sys.user' }
+        meta: { title: 'permManagement', icon: 'perm', code: 'sys.perm.view' }
       }
     ]
   },
@@ -125,13 +125,13 @@ export const asyncRouterMap = [
         path: 'article',
         component: _import('cms/article/index'),
         name: 'cmsArticleManagement',
-        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article' }
+        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article.view' }
       },
       {
         path: 'type',
         component: _import('cms/article/index'),
         name: 'cmsArticleManagement',
-        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article' },
+        meta: { title: 'cmsArticleManagement', icon: 'article', code: 'cms.article.view' },
         hidden: true
       }
     ]

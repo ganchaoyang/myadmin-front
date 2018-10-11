@@ -53,7 +53,7 @@ export default {
         console.log(id)
         findById(id).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             this.article.title = data.data.title
             this.article.subtitle = data.data.subtitle
             this.article.content = data.data.content

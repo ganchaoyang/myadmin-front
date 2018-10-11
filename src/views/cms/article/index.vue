@@ -148,12 +148,16 @@ export default {
       })
     },
     handelUpdateStatus(status, article) {
+      const oldStatus = article.status
       article.status = status
       editArticle(article).then(Response => {
         const data = Response.data
         if (data.code === 10000) {
           Message.success(data.data)
         } else {
+          console.log(article.status)
+          console.log(oldStatus)
+          article.status = oldStatus
           Message.error(data.message)
         }
       })

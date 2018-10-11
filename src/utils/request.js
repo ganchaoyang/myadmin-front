@@ -29,11 +29,6 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (res.code !== 10000) {
-      Message({
-        message: res.message,
-        type: 'error',
-        duration: 5 * 1000
-      })
       if (res.code === 40001) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
           confirmButtonText: '重新登录',
@@ -45,11 +40,10 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+        return Promise.reject('error')
       }
-      return Promise.reject('error')
-    } else {
-      return response
     }
+    return response
   },
   error => {
     console.log('err' + error)// for debug
