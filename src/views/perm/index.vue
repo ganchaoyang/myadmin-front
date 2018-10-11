@@ -250,23 +250,23 @@ export default {
        this.dialog.type === 'addChild') {
         addPerm(this.submitPerm).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             this.restoreDialog()
             this.permsTree()
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       } else if (this.dialog.type === 'edit') {
         editPerm(this.submitPerm).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             this.restoreDialog()
             this.permsTree()
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       }
@@ -274,11 +274,11 @@ export default {
     deletePermHandle(id) {
       deletePerm(id).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
-          Message.success(data.data)
+        if (data.code === 10000) {
+          Message.success(data.message)
           this.permsTree()
         } else {
-          Message.error(data.data)
+          Message.error(data.message)
         }
       })
     }

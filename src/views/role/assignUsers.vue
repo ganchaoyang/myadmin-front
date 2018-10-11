@@ -125,7 +125,7 @@ export default {
       }
       findById(this.role.id).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           this.initialUsers = data.data.users
           this.role.users = data.data.users
           this.role.name = data.data.name
@@ -153,11 +153,11 @@ export default {
     deleteUsersHandle() {
       updateRole(this.role).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           Message.success(data.data)
           this.initData()
         } else {
-          Message.error(data.data)
+          Message.error(data.message)
         }
       })
     },
@@ -165,7 +165,7 @@ export default {
       this.dialog.dialogVisible = true
       findAllUsers().then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           const userUnderTheRole = new Map()
           this.initialUsers.forEach(element => {
             userUnderTheRole.set(element.id, true)
@@ -187,12 +187,12 @@ export default {
     nextStepDialogHandle() {
       updateRole(this.role).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           Message.success(data.data)
           this.restoreDialog()
           this.initData()
         } else {
-          Message.error(data.data)
+          Message.error(data.message)
         }
       })
     },

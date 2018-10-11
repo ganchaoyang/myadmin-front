@@ -314,11 +314,11 @@ export default {
         addUser(this.addUser.submitData).then(Response => {
           const data = Response.data
           this.createDialogCancel()
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success('添加用户成功！')
             this.getList()
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       }
@@ -343,11 +343,11 @@ export default {
     },
     deleteU(id) {
       deleteUser(id).then(Response => {
-        if (Response.data.code === 0) {
+        if (Response.data.code === 10000) {
           Message.success('删除成功。')
           this.getList()
         } else {
-          Message.error(Response.data.data)
+          Message.error(Response.data.message)
         }
       })
     },
@@ -361,12 +361,12 @@ export default {
     },
     submitUpdate() {
       updateUser(this.editUser.data).then(Response => {
-        if (Response.data.code === 0) {
+        if (Response.data.code === 10000) {
           Message.success(Response.data.data)
           this.getList()
           this.handleCnacelEdit()
         } else {
-          Message.error(Response.data.data)
+          Message.error(Response.data.message)
         }
       })
     },
@@ -375,12 +375,12 @@ export default {
       this.editUser.data.disabled = !this.editUser.data.disabled
       this.editUser.data.loginName = null
       updateUser(this.editUser.data).then(Response => {
-        if (Response.data.code === 0) {
+        if (Response.data.code === 10000) {
           Message.success(Response.data.data)
           this.getList()
           this.initEditUser()
         } else {
-          Message.error(Response.data.data)
+          Message.error(Response.data.message)
         }
       })
     },

@@ -172,11 +172,11 @@ export default {
         editUnit(this.submitUnit).then(Response => {
           this.cancelDialog()
           const res = Response.data
-          if (res.code === 0) {
+          if (res.code === 10000) {
             Message.success(res.data)
             this.unitsTree()
           } else {
-            Message.error(res.data)
+            Message.error(res.message)
           }
         })
       } else {
@@ -191,7 +191,7 @@ export default {
           addUnit(this.submitUnit).then(Response => {
             this.cancelDialog()
             const data = Response.data
-            if (data.code === 0) {
+            if (data.code === 10000) {
               Message.success(data.data)
               this.unitsTree()
             } else {
@@ -235,11 +235,11 @@ export default {
     deleteUnitHandle(id) {
       deleteUnit(id).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           Message.success(data.data)
           this.unitsTree()
         } else {
-          Message.error(data.data)
+          Message.error(data.message)
         }
       })
     }

@@ -83,22 +83,22 @@ export default {
       if (this.edit) {
         editArticle(this.article).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             history.go(-1)
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       } else {
         // 调用接口提交数据。
         addArticle(this.article).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             history.go(-1)
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       }

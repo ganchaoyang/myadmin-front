@@ -144,7 +144,7 @@ export default {
     initAllPerm() {
       findAllPerms(true).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           this.allPerms = data.data
         }
       })
@@ -189,7 +189,7 @@ export default {
     deleteRoleHandle(id) {
       deleteRole(id).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           Message.success(data.data)
           this.getList()
         } else {
@@ -224,7 +224,7 @@ export default {
       this.dialog.title = '分配权限'
       findById(id).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           // 将请求到的角色信息，赋值给相应的变量。
           this.permsUnderTheRole = data.data.perms
           this.submitRole.id = data.data.id
@@ -273,23 +273,23 @@ export default {
       if (this.dialog.type === 'add') {
         addRole(this.submitRole).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             this.cancleDialogHandle()
             this.getList()
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       } else if (this.dialog.type === 'assignPerms' || this.dialog.type === 'edit') {
         updateRole(this.submitRole).then(Response => {
           const data = Response.data
-          if (data.code === 0) {
+          if (data.code === 10000) {
             Message.success(data.data)
             this.cancleDialogHandle()
             this.getList()
           } else {
-            Message.error(data.data)
+            Message.error(data.message)
           }
         })
       }

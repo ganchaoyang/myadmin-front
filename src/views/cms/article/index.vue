@@ -99,7 +99,7 @@ export default {
         this.listQuery.limit).then(Request => {
         this.listLoading = false
         const data = Request.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           this.list = data.data.list
           this.total = data.data.total
           this.wholeList = this.list
@@ -151,10 +151,10 @@ export default {
       article.status = status
       editArticle(article).then(Response => {
         const data = Response.data
-        if (data.code === 0) {
+        if (data.code === 10000) {
           Message.success(data.data)
         } else {
-          Message.error(data.data)
+          Message.error(data.message)
         }
       })
     }
