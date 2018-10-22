@@ -12,12 +12,7 @@
       <el-table-column min-width="150px" :label="$t('table.title')">
         <template slot-scope="scope">
           <span class="link-type">{{scope.row.title}}</span>
-          <el-tag>{{scope.row.type}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column min-width="150px" :label="$t('table.subtitle')">
-        <template slot-scope="scope">
-          <span>{{scope.row.subtitle}}</span>
+          <el-tag>{{scope.row.type | handleArticleType}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column width="150px" align="center" :label="$t('table.date')">
@@ -27,12 +22,12 @@
       </el-table-column>
       <el-table-column width="300px" align="center" :label="$t('table.author')">
         <template slot-scope="scope">
-          <span>{{scope.row.opBy}}</span>
+          <span>{{scope.row.createBy}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('table.readings')" width="95">
         <template slot-scope="scope">
-          <span v-if="scope.row.views" class="link-type">{{scope.row.pageviews}}</span>
+          <span v-if="scope.row.views" class="link-type">{{scope.row.views}}</span>
           <span v-else>0</span>
         </template>
       </el-table-column>
@@ -41,21 +36,22 @@
           <el-tag :type="scope.row.status | statusFilter">{{$t(statusNameFilter(scope.row.status))}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('table.actions')" width="230" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('table.actions')" width="350" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)">{{$t('table.edit')}}</el-button>
-          <el-button v-if="scope.row.status!='PUBLISHED'" size="mini" type="success" @click="handelUpdateStatus('PUBLISHED', scope.row)">{{$t('table.publish')}}
+          <el-button v-if="scope.row.status!= 2" size="mini" type="success" @click="handelUpdateStatus('PUBLISHED', scope.row)">{{$t('table.publish')}}
           </el-button>
-          <el-button v-if="scope.row.status!='DRAFT'" size="mini" @click="handelUpdateStatus('DRAFT', scope.row)">{{$t('table.draft')}}
+          <el-button v-if="scope.row.status!= 1" size="mini" @click="handelUpdateStatus('DRAFT', scope.row)">{{$t('table.draft')}}
           </el-button>
-          <el-button v-if="scope.row.status!='DELETED'" size="mini" type="danger" @click="handelUpdateStatus('DELETED', scope.row)">{{$t('table.delete')}}
+          <el-button v-if="scope.row.status!= 0" size="mini" type="danger" @click="handelUpdateStatus('DELETED', scope.row)">{{$t('table.delete')}}
           </el-button>
         </template>
       </el-table-column>  
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" 
+        :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -85,12 +81,16 @@ export default {
   },
   filters: {
     statusFilter(status) {
-      const statusMap = {
-        DRAFT: 'info',
-        PUBLISHED: 'success',
-        DELETED: 'danger'
-      }
-      return statusMap[status]
+      const statusArray = [
+        'danger',
+        'info',
+        'success'
+      ]
+      return statusArray[status]
+    },
+    handleArticleType(type) {
+      const typeArray = ['BLOG', 'ARTICLE']
+      return typeArray[type]
     }
   },
   methods: {
@@ -101,7 +101,7 @@ export default {
         const data = Request.data
         if (data.code === 10000) {
           this.list = data.data.list
-          this.total = data.data.total
+          this.total = data.data.totalNumber
           this.wholeList = this.list
         } else {
           Message.error('获取数据失败了！！')
@@ -115,12 +115,12 @@ export default {
       })
     },
     statusNameFilter(status) {
-      const statusNameMap = {
-        DRAFT: 'table.draft',
-        PUBLISHED: 'table.publish',
-        DELETED: 'table.delete'
-      }
-      return statusNameMap[status]
+      const statusNameArray = [
+        'table.delete',
+        'table.draft',
+        'table.publish'
+      ]
+      return statusNameArray[status]
     },
     handleCurrentChange(val) {
       this.listQuery.page = val
